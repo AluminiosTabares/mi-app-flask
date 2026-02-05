@@ -1,0 +1,251 @@
+[
+    {
+        "area": "Laminación",
+        "numero": 1,
+        "tipo": "Multipropósito A B C",
+        "capacidad": "10 libras",
+        "fecha_vencimiento": "2026-09-01",
+        "notificado": false
+    },
+    {
+        "area": "Laminación",
+        "numero": 2,
+        "tipo": "Agua a presión A",
+        "capacidad": "2.5 galones",
+        "fecha_vencimiento": "2026-04-01",
+        "notificado": false
+    },
+    {
+        "area": "Laminación",
+        "numero": 3,
+        "tipo": "Multipropósito A B C",
+        "capacidad": "10 libras",
+        "fecha_vencimiento": "2026-10-01",
+        "notificado": false
+    },
+    {
+        "area": "Laminación",
+        "numero": 4,
+        "tipo": "Polvo químico seco B C",
+        "capacidad": "10 libras",
+        "fecha_vencimiento": "2026-08-01",
+        "notificado": false
+    },
+    {
+        "area": "Laminación",
+        "numero": 5,
+        "tipo": "Gas carbónico CO2 B C",
+        "capacidad": "10 libras",
+        "fecha_vencimiento": "2026-04-01",
+        "notificado": false
+    },
+    {
+        "area": "Pintura",
+        "numero": 6,
+        "tipo": "Polvo químico seco B C",
+        "capacidad": "10 libras",
+        "fecha_vencimiento": "2026-08-01",
+        "notificado": false
+    },
+    {
+        "area": "Planta",
+        "numero": 7,
+        "tipo": "Gas carbónico CO2 B C",
+        "capacidad": "10 libras",
+        "fecha_vencimiento": "2026-10-01",
+        "notificado": false
+    },
+    {
+        "area": "Púlido y brillo",
+        "numero": 8,
+        "tipo": "Multipropósito A B C",
+        "capacidad": "10 libras",
+        "fecha_vencimiento": "2026-10-01",
+        "notificado": false
+    },
+    {
+        "area": "Púlido y brillo",
+        "numero": 9,
+        "tipo": "Multipropósito A B C",
+        "capacidad": "10 libras",
+        "fecha_vencimiento": "2026-10-01",
+        "notificado": false
+    },
+    {
+        "area": "Púlido y brillo",
+        "numero": 10,
+        "tipo": "Polvo químico seco B C",
+        "capacidad": "10 libras",
+        "fecha_vencimiento": "2026-10-01",
+        "notificado": false
+    },
+    {
+        "area": "Mesón",
+        "numero": 11,
+        "tipo": "Multipropósito A B C",
+        "capacidad": "20 libras",
+        "fecha_vencimiento": "2026-10-01",
+        "notificado": false
+    },
+    {
+        "area": "Almacén",
+        "numero": 12,
+        "tipo": "Agua a presión A",
+        "capacidad": "2.5 galones",
+        "fecha_vencimiento": "2026-08-01",
+        "notificado": false
+    },
+    {
+        "area": "Almacén sustancias químicas",
+        "numero": 13,
+        "tipo": "Agua a presión A",
+        "capacidad": "2.5 galones",
+        "fecha_vencimiento": "2026-08-01",
+        "notificado": false
+    },
+    {
+        "area": "Troquelado de aro",
+        "numero": 14,
+        "tipo": "Gas carbónico CO2 B C",
+        "capacidad": "10 libras",
+        "fecha_vencimiento": "2026-12-01",
+        "fecha": "2026-12-01",
+        "notificado": false
+    },
+    {
+        "area": "Taller",
+        "numero": 15,
+        "tipo": "Polvo químico seco B C",
+        "capacidad": "30 libras",
+        "fecha_vencimiento": "2026-08-01",
+        "notificado": false
+    },
+    {
+        "area": "Taller",
+        "numero": 16,
+        "tipo": "Polvo químico seco B C",
+        "capacidad": "20 libras",
+        "fecha_vencimiento": "2026-08-01",
+        "notificado": false
+    },
+    {
+        "area": "Empaque segundo piso",
+        "numero": 17,
+        "tipo": "Agua a presión A",
+        "capacidad": "2.5 galones",
+        "fecha_vencimiento": "2026-08-01",
+        "notificado": false
+    },
+    {
+        "area": "Emapque segundo piso",
+        "numero": 18,
+        "tipo": "Agua a presión A",
+        "capacidad": "2.5 galones",
+        "fecha_vencimiento": "2026-10-01",
+        "notificado": false
+    },
+    {
+        "area": "Empaque segundo piso",
+        "numero": 19,
+        "tipo": "Agua a presión A",
+        "capacidad": "2.5 galones",
+        "fecha_vencimiento": "2026-08-01",
+        "notificado": false
+    },
+    {
+        "area": "Horno térmico",
+        "numero": 20,
+        "tipo": "Multipropósito A B C",
+        "capacidad": "20 libras",
+        "fecha_vencimiento": "2026-04-01",
+        "notificado": false
+    },
+    {
+        "area": "Cizalla elétrica",
+        "numero": 21,
+        "tipo": "Multipropósito A B C",
+        "capacidad": "10 libras",
+        "fecha_vencimiento": "2026-08-01",
+        "notificado": true
+    },
+    {
+        "area": "Horno de recuperación",
+        "numero": 22,
+        "tipo": "Multipropósito A B C",
+        "capacidad": "20 libras",
+        "fecha_vencimiento": "2026-08-01",
+        "notificado": false
+    },
+    {
+        "area": "Horno de recuperación",
+        "numero": 23,
+        "tipo": "Polvo químico seco B C",
+        "capacidad": "10 libras",
+        "fecha_vencimiento": "2026-10-01",
+        "notificado": false
+    },
+    {
+        "area": "Vigilancia",
+        "numero": 24,
+        "tipo": "Polvo químico seco B C",
+        "capacidad": "20 libras",
+        "fecha_vencimiento": "2025-12-01",
+        "notificado": true
+    },
+    {
+        "area": "Vigilancia",
+        "numero": 25,
+        "tipo": "Polvo químico seco B C",
+        "capacidad": "20 libras",
+        "fecha_vencimiento": "2026-09-01",
+        "notificado": false
+    },
+    {
+        "area": "Oficina",
+        "numero": 26,
+        "tipo": "Polvo químico seco B C",
+        "capacidad": "20 libras",
+        "fecha_vencimiento": "2026-04-01",
+        "notificado": false
+    },
+    {
+        "area": "Oficina",
+        "numero": 27,
+        "tipo": "Polvo químico seco B C",
+        "capacidad": "20 libras",
+        "fecha_vencimiento": "2026-04-01",
+        "notificado": false
+    },
+    {
+        "area": "Camioneta",
+        "numero": 28,
+        "tipo": "Multipropósito A B C",
+        "capacidad": "30 libras",
+        "fecha_vencimiento": "2026-08-01",
+        "notificado": false
+    },
+    {
+        "area": "Montacarga",
+        "numero": 29,
+        "tipo": "Polvo químico seco B C",
+        "capacidad": "5 libras",
+        "fecha_vencimiento": "2026-09-01",
+        "notificado": false
+    },
+    {
+        "area": "Estación de bombeo",
+        "numero": 30,
+        "tipo": "Multipropósito A B C",
+        "capacidad": "20 libras",
+        "fecha_vencimiento": "2025-12-01",
+        "notificado": true
+    },
+    {
+        "area": "Planta",
+        "numero": 31,
+        "tipo": "Multipropósito A B C",
+        "capacidad": "20 libras",
+        "fecha_vencimiento": "2026-10-01",
+        "notificado": false
+    }
+]

@@ -1,0 +1,289 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Listado de Fichas Técnicas</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='estilos_admin.css') }}">
+
+    <style>
+        body {
+            font-family: Arial;
+            background: #f5f7fa;
+            margin: 0;
+            padding: 20px;
+        }
+
+        h1 {
+            color: #333;
+        }
+
+        .top-bar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+
+        .btn {
+            background: #0078d7;
+            color: white;
+            padding: 10px 14px;
+            text-decoration: none;
+            border-radius: 6px;
+            font-weight: bold;
+            transition: 0.2s;
+        }
+
+        .btn:hover {
+            background: #005fa3;
+        }
+
+        .btn-volver {
+            display: inline-block;
+            padding: 8px 14px;
+            background-color: #007bff;
+            color: white;
+            text-decoration: none;
+            border-radius: 6px;
+            margin-bottom: 15px;
+            transition: 0.2s;
+        }
+
+        .btn-volver:hover {
+            background-color: #0056b3;
+        }
+
+        .buscador-container {
+            text-align: center;
+            margin-bottom: 25px;
+        }
+
+        #buscador {
+            width: 80%;
+            max-width: 500px;
+            padding: 12px 15px;
+            border-radius: 8px;
+            border: 1px solid #007bff;
+            font-size: 16px;
+            outline: none;
+            transition: 0.2s;
+        }
+
+        #buscador:focus {
+            background: #eef6ff;
+            border-color: #0056b3;
+        }
+
+        /* CONTENEDOR DE TARJETAS */
+        .tarjetas-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 20px;
+        }
+
+        .tarjeta {
+            background: white;
+            border-radius: 14px;
+            padding: 18px;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.08);
+            transition: 0.2s;
+            border-left: 6px solid #0078d7;
+        }
+
+        .tarjeta:hover {
+            transform: translateY(-4px);
+        }
+
+        .tarjeta h3 {
+            margin: 0;
+            color: #0078d7;
+        }
+
+        .tarjeta p {
+            margin: 6px 0;
+            color: #444;
+            font-size: 14px;
+        }
+
+        .tarjeta strong {
+            color: #000;
+        }
+
+        .tarjeta .acciones {
+            margin-top: 12px;
+            text-align: right;
+        }
+
+    </style>
+</head>
+
+<body>
+
+    <div class="top-bar">
+        <h1>Fichas Técnicas</h1>
+        <a href="{{ url_for('nueva_ficha') }}" class="btn">+ Nueva Ficha</a>
+    </div>
+
+    <a href="{{ url_for('admin_dashboard') }}" class="btn-volver">⬅️ Volver</a>
+
+    <div class="buscador-container">
+        <input id="buscador" type="text" placeholder="🔍 Buscar máquina por nombre, marca o modelo...">
+    </div>
+
+    <div class="tarjetas-container" id="contenedorTarjetas">
+        {% for f in fichas %}
+        <div class="tarjeta">
+            <h3>{{ f.nombre }}</h3>
+
+            <p><strong>Código:</strong> {{ f.codigo }}</p>
+            <p><strong>Ubicación:</strong> {{ f.ubicacion }}</p>
+            <p><strong>Marca:</strong> {{ f.fabricante }}</p>
+            <p><strong>Modelo:</strong> {{ f.modelo }}</p>
+
+            <div class="acciones">
+                <a href="{{ url_for('ver_ficha', codigo=f.codigo) }}" class="btn">Ver ficha</a>
+            </div>
+        </div>
+        {% else %}
+        <p style="text-align:center;">No hay fichas registradas</p>
+        {% endfor %}
+    </div>
+
+    <script>
+        document.getElementById("buscador").addEventListener("keyup", function () {
+            let filtro = this.value.toLowerCase();
+            let tarjetas = document.querySelectorAll(".tarjeta");
+
+            tarjetas.forEach(tarjeta => {
+                let texto = tarjeta.innerText.toLowerCase();
+                tarjeta.style.display = texto.includes(filtro) ? "" : "none";
+            });
+        });
+    </script>
+
+</body>
+</html>
+
+
+<!-- 
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Listado de Fichas Técnicas</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='estilos_admin.css') }}">
+    <style>
+        body { font-family: Arial; background: #f5f7fa; margin: 0; padding: 20px; }
+        h1 { text-align: center; color: #333; }
+        table { width: 100%; border-collapse: collapse; margin-top: 20px; background: white; }
+        th, td { border: 1px solid #ddd; padding: 10px; text-align: left; }
+        th { background: #0078d7; color: white; }
+        tr:hover { background: #f1f1f1; }
+        .btn { background: #0078d7; color: white; padding: 8px 12px; text-decoration: none; border-radius: 5px; }
+        .top-bar { display: flex; justify-content: space-between; align-items: center; }
+        .btn-volver {
+    display: inline-block;
+    padding: 8px 14px;
+    background-color: #007bff;
+    color: white;
+    text-decoration: none;
+    border-radius: 6px;
+    margin-bottom: 15px;
+    transition: 0.2s;
+}
+
+.btn-volver:hover {
+    background-color: #0056b3;
+}
+
+.buscador-container {
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+#buscador {
+    width: 80%;
+    max-width: 500px;
+    padding: 12px 15px;
+    border-radius: 8px;
+    border: 1px solid #007bff;
+    font-size: 16px;
+    outline: none;
+    transition: 0.2s;
+}
+
+#buscador:focus {
+    background: #eef6ff;
+    border-color: #0056b3;
+}
+
+
+    </style>
+</head>
+<body>
+    <div class="top-bar">
+        <h1>Fichas Técnicas</h1>
+        <a href="{{ url_for('nueva_ficha') }}" class="btn">+ Nueva Ficha</a>
+    </div>
+
+    <table>
+        
+        <thead>
+            <a href="{{ url_for('admin_dashboard') }}" class="btn-volver">⬅️ Volver</a>
+
+            <div class="buscador-container">
+    <input id="buscador" type="text" placeholder="🔍 Buscar máquina por nombre, marca o modelo...">
+</div>
+
+
+            <tr>
+                <th>Código</th>
+                <th>Nombre</th>
+                <th>Ubicación</th>
+                <th>Marca</th>
+                <th>Modelo</th>
+                <th>Acciones</th>
+            </tr>
+        </thead>
+        
+        <tbody>
+            {% for f in fichas %}
+            <tr>
+                <td>{{ f.codigo }}</td>
+                <td>{{ f.nombre }}</td>
+                <td>{{ f.ubicacion }}</td>
+                <td>{{ f.fabricante }}</td>
+                <td>{{ f.modelo }}</td>
+                <td>
+                    <a href="{{ url_for('ver_ficha', codigo=f.codigo) }}" class="btn">Ver</a>
+                </td>
+            </tr>
+            {% else %}
+            <tr>
+                <td colspan="6" style="text-align:center;">No hay fichas registradas</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+    <script>
+    document.getElementById("buscador").addEventListener("keyup", function() {
+        let filtro = this.value.toLowerCase();
+        let filas = document.querySelectorAll("tbody tr");
+
+        filas.forEach(fila => {
+            let texto = fila.innerText.toLowerCase();
+            
+            if (texto.includes(filtro)) {
+                fila.style.display = "";
+            } else {
+                fila.style.display = "none";
+            }
+        });
+    });
+</script>
+
+</body>
+</html>
+-->
+

@@ -1,0 +1,1 @@
+# registroMaquinaria-controlExtintores

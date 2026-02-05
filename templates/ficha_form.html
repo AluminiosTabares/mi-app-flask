@@ -1,0 +1,226 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Registro de Ficha Técnica de Máquina</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='estilos_admin.css') }}">
+    <style>
+        body {
+            font-family: "Poppins", "Roboto", sans-serif;
+            background: #f0f4f8;
+            padding: 40px;
+            color: #333;
+        }
+
+        form {
+            background: #ffffff;
+            max-width: 950px;
+            margin: auto;
+            padding: 40px 50px;
+            border-radius: 15px;
+            box-shadow: 0 8px 25px rgba(0,0,0,0.1);
+        }
+
+        h1 {
+            text-align: center;
+            color: #0a3d62;
+            font-size: 1.9rem;
+            margin-bottom: 30px;
+            padding-bottom: 12px;
+            border-bottom: 3px solid #0a3d62;
+        }
+
+        h2, h3 {
+            color: #0a3d62;
+            margin-top: 30px;
+            border-bottom: 2px solid #dce3ec;
+            padding-bottom: 6px;
+            font-size: 1.1rem;
+            font-weight: 600;
+        }
+
+        label {
+            display: block;
+            margin-top: 14px;
+            font-weight: 600;
+            color: #0a3d62;
+        }
+
+        input, textarea, select {
+            width: 100%;
+            padding: 10px 12px;
+            margin-top: 6px;
+            border: 1.5px solid #cdd7e1;
+            border-radius: 8px;
+            font-size: 15px;
+            background: #f9fbfd;
+            transition: 0.3s ease;
+            font-family: inherit;
+        }
+
+        input:focus, textarea:focus, select:focus {
+            outline: none;
+            border-color: #0a3d62;
+            box-shadow: 0 0 6px rgba(10,61,98,0.3);
+            background: #ffffff;
+        }
+
+        textarea {
+            resize: vertical;
+        }
+
+        .seccion {
+            border: 2px solid #0a3d62;
+            border-radius: 12px;
+            padding: 25px 30px;
+            margin-bottom: 25px;
+            background: #f8fbff;
+            box-shadow: 0 3px 8px rgba(0,0,0,0.05);
+        }
+
+        .imagenes {
+            margin-top: 15px;
+            display: flex;
+            justify-content: center;
+        }
+
+        .imagenes input[type="file"] {
+            padding: 6px;
+            border: 1px solid #ccc;
+            border-radius: 8px;
+            width: 100%;
+            background: #f9fbfd;
+        }
+
+        button {
+            background: #0a3d62;
+            color: white;
+            border: none;
+            padding: 14px 22px;
+            margin-top: 35px;
+            cursor: pointer;
+            border-radius: 10px;
+            font-size: 16px;
+            width: 100%;
+            font-weight: bold;
+            letter-spacing: 0.5px;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 12px rgba(10,61,98,0.25);
+        }
+
+        button:hover {
+            background: #093b58;
+            transform: translateY(-1px);
+            box-shadow: 0 6px 16px rgba(10,61,98,0.3);
+        }
+
+        a {
+            display: inline-block;
+            margin-top: 18px;
+            text-decoration: none;
+            color: #0a3d62;
+            text-align: center;
+            width: 100%;
+            font-weight: 600;
+            transition: color 0.3s;
+        }
+
+        a:hover {
+            color: #004b8c;
+        }
+    </style>
+</head>
+<body>
+
+<form method="POST" enctype="multipart/form-data">
+    <label>Código:</label>
+    <input type="text" name="codigo">
+
+    <label>Nombre del equipo:</label>
+    <input type="text" name="nombre">
+
+    <label>Marca:</label>
+    <input type="text" name="fabricante">
+
+    <label>Modelo:</label>
+    <input type="text" name="modelo">
+
+    <label>Operador:</label>
+    <input type="text" name="operador">
+
+    <label>Año:</label>
+    <input type="text" name="anio">
+
+    <label>Ubicación:</label>
+    <input type="text" name="ubicacion">
+
+    <label>Peso:</label>
+    <input type="text" name="peso">
+
+    <label>Altura:</label>
+    <input type="text" name="altura">
+
+    <label>Ancho:</label>
+    <input type="text" name="ancho">
+
+    <label>Largo:</label>
+    <input type="text" name="largo">
+
+    <label>Voltaje:</label>
+    <input type="text" name="voltaje">
+
+    <label>Motor (HP):</label>
+    <input type="text" name="motor_hp">
+
+    <label>Fuerza:</label>
+    <input type="text" name="fuerza">
+
+    <label>Velocidad inicial:</label>
+    <input type="text" name="velocidad_inicial">
+
+    <label>Velocidad final:</label>
+    <input type="text" name="velocidad_final">
+
+    <label>Tipo de lubricación:</label>
+    <input type="text" name="tipo_lubricacion">
+
+    <label>Funcionamiento:</label>
+    <textarea name="funcionamiento" rows="4"></textarea>
+
+    <label>Partes requeridas:</label>
+    <textarea name="partes_requeridas" rows="3"></textarea>
+
+    <label>Recomendaciones:</label>
+    <textarea name="recomendaciones" rows="3"></textarea>
+
+    <label>Accesorios (separar por comas):</label>
+    <textarea name="accesorios" rows="2"></textarea>
+
+    <label>Historial de mantenimientos:</label>
+    <h3>Historial inicial</h3>
+
+    <label>Fecha:</label>
+    <input type="date" name="historial_fecha">
+
+    <label>Tipo:</label>
+    <input type="text" name="historial_tipo">
+
+    <label>Descripción:</label>
+    <textarea name="historial_descripcion" rows="2"></textarea>
+
+    <label>Responsable:</label>
+    <input type="text" name="historial_responsable">
+
+    <label>Observación:</label>
+    <textarea name="historial_observacion" rows="2"></textarea>
+
+
+    <label>Imagen de la máquina:</label>
+    <input type="file" name="imagen_maquina" accept="image/*">
+
+    <button type="submit">Guardar Ficha Técnica</button>
+    <a href="{{ url_for('admin_fichas') }}">← Volver</a>
+</form>
+
+</body>
+</html>

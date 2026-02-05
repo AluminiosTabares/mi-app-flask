@@ -1,0 +1,277 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Editar Ficha - {{ ficha.nombre }}</title>
+    <style>
+        /* ======== ESTILOS GENERALES ======== */
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #0a3d62, #3c6382);
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: flex-start;
+            min-height: 100vh;
+            color: #333;
+        }
+
+        form {
+            background-color: #fff;
+            margin: 40px 0;
+            padding: 30px 40px;
+            border-radius: 14px;
+            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.2);
+            width: 95%;
+            max-width: 950px;
+        }
+
+        h1 {
+            text-align: center;
+            color: #0a3d62;
+            margin-bottom: 0.3em;
+        }
+
+        h3 {
+            color: #074368;
+            border-left: 5px solid #0a3d62;
+            padding-left: 10px;
+            margin-top: 2em;
+        }
+
+        label {
+            font-weight: 600;
+            color: #0a3d62;
+            display: block;
+            margin-bottom: 6px;
+            margin-top: 12px;
+        }
+
+        input[type="text"],
+        input[type="date"],
+        textarea {
+            width: 100%;
+            padding: 10px 12px;
+            border-radius: 8px;
+            border: 1px solid #ccc;
+            font-size: 0.95em;
+            box-sizing: border-box;
+            transition: 0.3s;
+            resize: vertical;
+        }
+
+        input:focus,
+        textarea:focus {
+            border-color: #0a3d62;
+            outline: none;
+            box-shadow: 0 0 5px rgba(10, 61, 98, 0.3);
+        }
+
+        textarea {
+            min-height: 70px;
+        }
+
+        /* ======== BOTONES ======== */
+        button[type="submit"] {
+            display: block;
+            width: 100%;
+            background-color: #0a3d62;
+            color: #fff;
+            border: none;
+            padding: 14px;
+            font-size: 1em;
+            border-radius: 10px;
+            cursor: pointer;
+            margin-top: 25px;
+            transition: background 0.3s;
+        }
+
+        button[type="submit"]:hover {
+            background-color: #074368;
+        }
+
+        a {
+            display: inline-block;
+            margin-top: 15px;
+            background-color: #bbb;
+            color: #fff;
+            text-decoration: none;
+            padding: 10px 20px;
+            border-radius: 8px;
+            transition: 0.3s;
+        }
+
+        a:hover {
+            background-color: #999;
+        }
+
+        /* ======== SECCIONES ======== */
+        .form-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1em 1.5em;
+        }
+
+        .historial-item {
+            background-color: #f9f9f9;
+            border-radius: 10px;
+            padding: 15px 20px;
+            margin-top: 1em;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+        }
+
+        .historial-item hr {
+            border: none;
+            border-top: 1px solid #ccc;
+            margin-top: 15px;
+        }
+
+        p {
+            color: #555;
+        }
+    </style>
+</head>
+
+<body>
+    <form method="POST" enctype="multipart/form-data">
+        <h1>Editar ficha técnica: {{ ficha.nombre }}</h1>
+
+        <h3>Imagen de la máquina</h3>
+
+{% if ficha.imagen_maquina %}
+    <p>Imagen actual:</p>
+    <img src="{{ url_for('static', filename='imagenes/' + ficha.imagen_maquina) }}"
+         style="max-width:300px; border-radius:10px; margin-bottom:10px;">
+{% else %}
+    <p><em>Esta ficha no tiene imagen registrada.</em></p>
+{% endif %}
+
+<label>Subir nueva imagen (opcional):</label>
+<input type="file" name="imagen_maquina" accept="image/*">
+
+
+        <div class="form-grid">
+            <div>
+                <label>Nombre:</label>
+                <input type="text" name="nombre" value="{{ ficha.nombre }}">
+            </div>
+
+            <div>
+                <label>Fabricante:</label>
+                <input type="text" name="fabricante" value="{{ ficha.fabricante }}">
+            </div>
+
+            <div>
+                <label>Modelo:</label>
+                <input type="text" name="modelo" value="{{ ficha.modelo }}">
+            </div>
+
+            <div>
+                <label>Operador:</label>
+                <input type="text" name="operador" value="{{ ficha.operador }}">
+            </div>
+
+            <div>
+                <label>Año:</label>
+                <input type="text" name="anio" value="{{ ficha.anio }}">
+            </div>
+
+            <div>
+                <label>Ubicación:</label>
+                <input type="text" name="ubicacion" value="{{ ficha.ubicacion }}">
+            </div>
+            <div>
+        <label>Peso:</label>
+        <input type="text" name="peso" value="{{ ficha.peso }}">
+    </div>
+
+    <div>
+        <label>Altura:</label>
+        <input type="text" name="altura" value="{{ ficha.altura }}">
+    </div>
+
+    <div>
+        <label>Ancho:</label>
+        <input type="text" name="ancho" value="{{ ficha.ancho }}">
+    </div>
+
+    <div>
+        <label>Largo:</label>
+        <input type="text" name="largo" value="{{ ficha.largo }}">
+    </div>
+
+    <div>
+        <label>Voltaje:</label>
+        <input type="text" name="voltaje" value="{{ ficha.voltaje }}">
+    </div>
+
+    <div>
+        <label>Motor (HP):</label>
+        <input type="text" name="motor_hp" value="{{ ficha.motor_hp }}">
+    </div>
+
+    <div>
+        <label>Fuerza:</label>
+        <input type="text" name="fuerza" value="{{ ficha.fuerza }}">
+    </div>
+
+    <div>
+        <label>Velocidad inicial:</label>
+        <input type="text" name="velocidad_inicial" value="{{ ficha.velocidad_inicial }}">
+    </div>
+
+    <div>
+        <label>Velocidad final:</label>
+        <input type="text" name="velocidad_final" value="{{ ficha.velocidad_final }}">
+    </div>
+
+    <div>
+        <label>Tipo de lubricación:</label>
+        <input type="text" name="tipo_lubricacion" value="{{ ficha.tipo_lubricacion }}">
+    </div>
+        </div>
+
+        <label>Funcionamiento:</label>
+        <textarea name="funcionamiento">{{ ficha.funcionamiento }}</textarea>
+
+        <label>Partes requeridas:</label>
+        <textarea name="partes_requeridas">{{ ficha.partes_requeridas }}</textarea>
+
+        <label>Recomendaciones:</label>
+        <textarea name="recomendaciones">{{ ficha.recomendaciones }}</textarea>
+
+        <label>Accesorios (separados por comas):</label>
+        <textarea name="accesorios">{{ ficha.accesorios | join(', ') }}</textarea>
+
+        <h3>Historial de mantenimiento</h3>
+        {% if ficha.historial %}
+            {% for h in ficha.historial %}
+                <div class="historial-item">
+                    <label>Fecha:</label>
+                    <input type="date" name="historial_fecha_{{ loop.index0 }}" value="{{ h.fecha }}">
+                    
+                    <label>Tipo:</label>
+                    <input type="text" name="historial_tipo_{{ loop.index0 }}" value="{{ h.tipo }}">
+                    
+                    <label>Descripción:</label>
+                    <textarea name="historial_descripcion_{{ loop.index0 }}">{{ h.descripcion }}</textarea>
+                    
+                    <label>Responsable:</label>
+                    <input type="text" name="historial_responsable_{{ loop.index0 }}" value="{{ h.responsable }}">
+                    
+                    <label>Observación:</label>
+                    <textarea name="historial_observacion_{{ loop.index0 }}">{{ h.observacion }}</textarea>
+                    <hr>
+                </div>
+            {% endfor %}
+        {% else %}
+        
+            <p>No hay registros de mantenimiento aún.</p>
+        {% endif %}
+
+        <button type="submit">💾 Guardar cambios</button>
+        <a href="{{ url_for('ver_ficha', codigo=ficha.codigo) }}">Cancelar</a>
+    </form>
+</body>
+</html>

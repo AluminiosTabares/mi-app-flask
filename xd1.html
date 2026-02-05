@@ -1,0 +1,370 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Ficha Técnica (Vacía para Llenar)</title>
+    <style>
+        @page { size: A4; margin: 20mm; }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, sans-serif;
+            background: #e9edf3;
+            padding: 25px;
+            display: flex;
+            justify-content: center;
+            color: #1b2f52;
+            font-size: 13.5px;
+        }
+
+        .contenedor {
+            background: #ffffff;
+            border: 1px solid #c5d1e0;
+            width: 100%;
+            max-width: 900px;
+            padding: 22px;
+            border-radius: 10px;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+            box-sizing: border-box;
+        }
+
+        h1 {
+            text-align: center;
+            font-size: 22px;
+            margin-bottom: 14px;
+            color: #2a5d9f;
+            border-bottom: 3px solid #2a5d9f;
+            padding-bottom: 6px;
+        }
+
+        .bloque {
+            border: 1px solid #cfd8e4;
+            margin-top: 14px;
+            padding: 14px;
+            border-radius: 8px;
+            background: #f8fbff;
+        }
+
+        .bloque h2 {
+            margin: -14px -14px 10px -14px;
+            background: #2a5d9f;
+            color: white;
+            text-align: center;
+            padding: 8px 0;
+            font-size: 15px;
+            border-radius: 8px 8px 0 0;
+        }
+
+        /* Identificación */
+        .bloque-identificacion {
+            display: grid;
+            grid-template-columns: 1fr 1fr 220px;
+            gap: 14px;
+        }
+
+        .campo {
+            display: flex;
+            justify-content: space-between;
+            border-bottom: 1px dotted #aac3df;
+            padding: 4px 0;
+        }
+
+        .label {
+            font-weight: 600;
+            color: #1b3b66;
+            width: 46%;
+        }
+
+        .valor {
+            text-align: right;
+            width: 52%;
+            color: #21497d;
+        }
+
+        .imagen-maquina {
+            text-align: center;
+        }
+
+        .imagen-maquina img {
+            width: 160px;
+            height: 160px;
+            object-fit: cover;
+            border: 2px solid #2a5d9f;
+            border-radius: 6px;
+            background: #fff;
+        }
+
+        .bloque-funcionamiento p {
+            margin: 8px 0 4px;
+            font-weight: 600;
+            color: #2a5d9f;
+        }
+
+        .texto-cuadro {
+            white-space: pre-wrap;
+            border: 1px dashed #aac3df;
+            padding: 8px;
+            background: #fdfefe;
+            border-radius: 5px;
+            min-height: 140px; /* 🔹 más grandes */
+        }
+
+        /* Bloques finales */
+        .bloque-final {
+            display: flex;
+            flex-direction: column;
+            gap: 14px;
+        }
+
+        .sub-bloque {
+            border: 1px solid #aac3df;
+            padding: 12px;
+            border-radius: 6px;
+            background: #fdfefe;
+            min-height: 150px;
+        }
+
+        .sub-bloque h3 {
+            margin: -12px -12px 8px -12px;
+            background: #2a5d9f;
+            color: white;
+            text-align: center;
+            padding: 6px 0;
+            font-size: 14px;
+            border-radius: 6px 6px 0 0;
+        }
+
+        /* Tabla Historial */
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            background: white;
+            font-size: 12.5px;
+        }
+
+        th, td {
+            padding: 6px;
+            text-align: left;
+            border: 1px solid #cbd5e1;
+        }
+
+        th {
+            background: #2a5d9f;
+            color: white;
+            text-align: center;
+        }
+
+        tr:nth-child(even) {
+            background: #f1f5fa;
+        }
+
+        .logo-ficha {
+            position: absolute;
+            left: 10px;
+            top: 5px;
+            width: 80px;
+            height: auto;
+        }
+
+        .encabezado-ficha {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            margin-bottom: 10px;
+        }
+
+        .historial {
+  margin-top: 25px;
+}
+
+.historial h2 {
+  font-size: 18px;
+  color: #2a5d9f;
+  margin-bottom: 10px;
+  text-align: center;
+}
+
+.tabla-historial {
+  width: 100%;
+  border-collapse: collapse;
+  text-align: center;
+  font-family: Arial, sans-serif;
+  font-size: 13px;
+}
+
+.tabla-historial th,
+.tabla-historial td {
+  border: 1px solid #2a5d9f;
+  padding: 6px;
+  height: 35px;
+  vertical-align: middle;
+  word-wrap: break-word;
+}
+
+.tabla-historial th {
+  background-color: #2a5d9f;
+  font-weight: bold;
+}
+
+.tabla-historial td {
+  background-color: #ffffff;
+}
+
+
+        @media print {
+            body { background: white; }
+            .contenedor { border: 2px solid #000; box-shadow: none; }
+        }
+    </style>
+</head>
+<body>
+<div class="contenedor">
+
+    <div class="encabezado-ficha">
+        <img src="{{ url_for('static', filename='uploads/logo.png') }}" alt="Logo tabares" class="logo-ficha">
+        <h1>FICHA TÉCNICA DE MAQUINARIA</h1>
+    </div>
+
+    <!-- IDENTIFICACIÓN -->
+    <div class="bloque">
+        <h2>IDENTIFICACIÓN / CARACTERÍSTICAS</h2>
+        <div class="bloque-identificacion">
+            <div>
+                <div class="campo"><span class="label">Código:</span><span class="valor"></span></div>
+                <div class="campo"><span class="label">Fabricante:</span><span class="valor"></span></div>
+                <div class="campo"><span class="label">Modelo:</span><span class="valor"></span></div>
+                <div class="campo"><span class="label">Marca:</span><span class="valor"></span></div>
+                <div class="campo"><span class="label">Ubicación:</span><span class="valor"></span></div>
+                <div class="campo"><span class="label">Motor:</span><span class="valor"></span></div>
+                <div class="campo"><span class="label">Operador:</span><span class="valor"></span></div>
+            </div>
+
+            <div>
+                <div class="campo"><span class="label">Nombre del equipo:</span><span class="valor"></span></div>
+                <div class="campo"><span class="label">Peso:</span><span class="valor"></span></div>
+                <div class="campo"><span class="label">Altura:</span><span class="valor"></span></div>
+                <div class="campo"><span class="label">Ancho:</span><span class="valor"></span></div>
+                <div class="campo"><span class="label">Largo:</span><span class="valor"></span></div>
+                <div class="campo"><span class="label">Tipo de lubricación:</span><span class="valor"></span></div>
+                <div class="campo"><span class="label">Fuerza:</span><span class="valor"></span></div>
+            </div>
+
+            <div class="imagen-maquina">
+                <div style="width:160px;height:160px;display:flex;align-items:center;justify-content:center;border:2px dashed #aac3df;background:#f0f6fd;color:#4a6ea9;font-size:12px;border-radius:6px;">
+                    FOTO<br>MAQUINA
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+    <!-- FUNCIONAMIENTO -->
+    <div class="bloque">
+        <h2>FUNCIONAMIENTO / PARTES / RECOMENDACIONES</h2>
+        <div class="bloque-funcionamiento">
+            <p>Funcionamiento:</p>
+            <div class="texto-cuadro"></div>
+
+            <p>Partes requeridas:</p>
+            <div class="texto-cuadro"></div>
+
+            <p>Recomendaciones de mantenimiento:</p>
+            <div class="texto-cuadro"></div>
+        </div>
+    </div>
+
+    <!-- ACCESORIOS E HISTORIAL -->
+    <div class="bloque">
+        <h2>ACCESORIOS PRINCIPALES / HISTORIAL DE MANTENIMIENTOS</h2>
+        <div class="bloque-final">
+            <div class="sub-bloque">
+                <h3>Accesorios principales</h3>
+                <div class="texto-cuadro" style="min-height:100px;"></div>
+            </div>
+
+            <section class="historial">
+  <h2>Historial de Mantenimiento</h2>
+  <table class="tabla-historial">
+    <thead>
+      <tr>
+        <th>Fecha</th>
+        <th>Tipo</th>
+        <th>Descripción</th>
+        <th>responsable</th>
+        <th>Observacion</th>
+      </tr>
+    </thead>
+    <tbody>
+      <!-- Puedes agregar más filas copiando una de estas -->
+       <tr>
+        <td></td>
+        <td></td>
+        <td></td>
+        <td></td>
+        <td></td>
+      </tr>
+      <tr>
+        <td></td>
+        <td></td>
+        <td></td>
+        <td></td>
+        <td></td>
+      </tr>
+      <tr>
+        <td></td>
+        <td></td>
+        <td></td>
+        <td></td>
+        <td></td>
+      </tr>
+      <tr>
+        <td></td>
+        <td></td>
+        <td></td>
+        <td></td>
+        <td></td>
+      </tr>
+      <tr>
+        <td></td>
+        <td></td>
+        <td></td>
+        <td></td>
+        <td></td>
+      </tr>
+       <tr>
+        <td></td>
+        <td></td>
+        <td></td>
+        <td></td>
+        <td></td>
+      </tr>
+      <tr>
+        <td></td>
+        <td></td>
+        <td></td>
+        <td></td>
+        <td></td>
+      </tr>
+      <tr>
+        <td></td>
+        <td></td>
+        <td></td>
+        <td></td>
+        <td></td>
+      </tr>
+      <tr>
+        <td></td>
+        <td></td>
+        <td></td>
+        <td></td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+</section>
+
+        </div>
+    </div>
+</div>
+</body>
+</html>

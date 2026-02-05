@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Agregar Historial de Mantenimiento</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/agregar_historial.css') }}">
+</head>
+
+<style>
+    /* ======== CONFIGURACIÓN GENERAL ======== */
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background: #f2f4f7;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+    min-height: 100vh;
+}
+
+/* ======== CONTENEDOR PRINCIPAL ======== */
+.form-container {
+    background: #fff;
+    width: 90%;
+    max-width: 650px;
+    margin: 50px auto;
+    padding: 30px 40px;
+    border-radius: 15px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+    transition: all 0.3s ease;
+}
+
+.form-container:hover {
+    transform: translateY(-3px);
+}
+
+/* ======== TÍTULO ======== */
+.form-container h2 {
+    text-align: center;
+    color: #333;
+    margin-bottom: 25px;
+    font-size: 1.8em;
+    border-bottom: 3px solid #007bff;
+    padding-bottom: 10px;
+}
+
+/* ======== CAMPOS DE FORMULARIO ======== */
+form label {
+    display: block;
+    margin-top: 15px;
+    color: #444;
+    font-weight: 600;
+}
+
+form input,
+form textarea,
+form select {
+    width: 100%;
+    padding: 10px 12px;
+    margin-top: 6px;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    background: #fafafa;
+    font-size: 15px;
+    transition: all 0.2s ease;
+}
+
+form input:focus,
+form textarea:focus,
+form select:focus {
+    border-color: #007bff;
+    background: #fff;
+    outline: none;
+}
+
+/* ======== BOTONES ======== */
+.btn-container {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 25px;
+}
+
+button {
+    background: #007bff;
+    color: white;
+    border: none;
+    padding: 12px 25px;
+    border-radius: 8px;
+    font-size: 15px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+button:hover {
+    background: #0056b3;
+    transform: scale(1.02);
+}
+
+.btn-cancelar {
+    background: #6c757d;
+}
+
+.btn-cancelar:hover {
+    background: #5a6268;
+}
+
+/* ======== ALERTA DE ÉXITO ======== */
+.alert {
+    background-color: #d4edda;
+    border: 1px solid #c3e6cb;
+    color: #155724;
+    padding: 12px;
+    border-radius: 8px;
+    margin-top: 15px;
+    text-align: center;
+    font-weight: 600;
+}
+
+</style>
+
+<body>
+    <div class="form-container">
+        <h2>Agregar Historial de Mantenimiento</h2>
+        <form action="{{ url_for('agregar_historial', codigo=ficha.codigo) }}" method="POST">
+            <label for="fecha">Fecha</label>
+            <input type="date" name="fecha" id="fecha" required>
+
+            <label for="tipo">Tipo</label>
+            <input type="text" name="tipo" id="tipo" placeholder="Ej: Revisión general" required>
+
+            <label for="descripcion">Descripción</label>
+            <textarea name="descripcion" id="descripcion" rows="3" placeholder="Detalle de la intervención..." required></textarea>
+
+            <label for="responsable">Responsable</label>
+            <input type="text" name="responsable" id="responsable" placeholder="Nombre del técnico" required>
+
+            <label for="observacion">Observación</label>
+            <textarea name="observacion" id="observacion" rows="2" placeholder="Observaciones adicionales..."></textarea>
+
+            <div class="btn-container">
+                <button type="submit">💾 Guardar</button>
+                <a href="{{ url_for('ver_ficha', codigo=ficha.codigo) }}">
+                    <button type="button" class="btn-cancelar">↩ Volver</button>
+                </a>
+            </div>
+        </form>
+
+        {% if mensaje %}
+        <div class="alert">{{ mensaje }}</div>
+        {% endif %}
+    </div>
+</body>
+</html>

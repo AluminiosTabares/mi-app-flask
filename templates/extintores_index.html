@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Control de Extintores</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='extintores/extintores_style.css') }}">
+</head>
+<body>
+    <header>
+        <h1>Control de Extintores</h1>
+    </header>
+
+    <main>
+        <div class="volver-container">
+            <a href="{{ url_for('admin_dashboard') }}">
+                <button class="btn-volver">Volver</button>
+            </a>
+        </div>
+
+        <section class="extintores-section">
+            <h2>Control de Extintores</h2>
+            <div class="extintores-grid">
+                {% for e in extintores %}
+                <div class="extintor-card 
+                    {% if 'multipropósito' in e.tipo|lower or 'multiproposito' in e.tipo|lower %}
+                        multiproposito
+                    {% elif 'polvo' in e.tipo|lower or 'gas' in e.tipo|lower %}
+                        quimico
+                    {% elif 'agua' in e.tipo|lower %}
+                        agua
+                    {% endif %}
+                ">
+                <!-- 🔥 Imagen según tipo -->
+                    {% if 'multipropósito' in e.tipo|lower or 'multiproposito' in e.tipo|lower %}
+                        <img src="{{ url_for('static', filename='img/extintorAmarillo.png') }}" alt="Extintor multipropósito" class="img-extintor">
+                    {% elif 'polvo' in e.tipo|lower or 'gas' in e.tipo|lower %}
+                        <img src="{{ url_for('static', filename='img/extintorRojo.png') }}" alt="Extintor polvo químico" class="img-extintor">
+                    {% elif 'agua' in e.tipo|lower %}
+                        <img src="{{ url_for('static', filename='img/extintorVerde.png') }}" alt="Extintor agua a presión" class="img-extintor">
+                    {% endif %}
+                    <h3>Extintor #{{ e.numero }}</h3>
+                    <span class="estado-badge {{ e.clase }}">
+                        {{ e.estado }}
+                    </span>
+                    <p><strong>Área:</strong> {{ e.area }}</p>
+                    <p><strong>Tipo:</strong> {{ e.tipo }}</p>
+                    <p><strong>Capacidad:</strong> {{ e.capacidad }}</p>
+                    <p><strong>Vence:</strong> {{ e.fecha }}</p>
+
+                    <a href="{{ url_for('editar_extintor', numero=e.numero) }}"
+   class="btn-editar 
+        {% if 'multipropósito' in e.tipo|lower or 'multiproposito' in e.tipo|lower %}
+            multiproposito
+        {% elif 'polvo' in e.tipo|lower or 'gas' in e.tipo|lower %}
+            quimico
+        {% elif 'agua' in e.tipo|lower %}
+            agua
+        {% endif %}
+   ">
+   Editar
+</a>
+
+
+
+                </div>
+                {% endfor %}
+            </div>
+        </section>
+    </main>
+</body>
+</html>

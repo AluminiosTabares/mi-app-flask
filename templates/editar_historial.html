@@ -1,0 +1,19 @@
+<form method="POST">
+    <label>Fecha</label>
+    <input type="date" name="fecha" value="{{ mantenimiento.fecha }}" required>
+
+    <label>Tipo</label>
+    <input type="text" name="tipo" value="{{ mantenimiento.tipo }}" required>
+
+    <label>Descripción</label>
+    <textarea name="descripcion" required>{{ mantenimiento.descripcion }}</textarea>
+
+    <label>Responsable</label>
+    <input type="text" name="responsable" value="{{ mantenimiento.responsable }}" required>
+
+    <label>Observación</label>
+    <textarea name="observacion">{{ mantenimiento.observacion }}</textarea>
+
+    <button type="submit">💾 Guardar cambios</button>
+    <a href="{{ url_for('ver_ficha', codigo=ficha.codigo) }}">Cancelar</a>
+</form>
