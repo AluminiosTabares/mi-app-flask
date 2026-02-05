@@ -21,13 +21,29 @@ def migrar():
 
         for item in datos:
             # Crear la máquina
+            # Esto va dentro del bucle 'for item in datos:'
             nueva_maquina = Maquina(
                 codigo=item.get('codigo'),
                 nombre=item.get('nombre'),
                 ubicacion=item.get('ubicacion'),
-                # Agrega aquí todos los campos de tu JSON que coincidan con models.py
+                fabricante=item.get('fabricante'),
+                modelo=item.get('modelo'),
+                operador=item.get('operador'),
+                anio=item.get('anio'), # O item.get('año') si en el JSON está con ñ
+                peso=item.get('peso'),
+                altura=item.get('altura'),
+                ancho=item.get('ancho'),
+                largo=item.get('largo'),
+                voltaje=item.get('voltaje'),
+                motor_hp=item.get('motor_hp'),
+                fuerza=item.get('fuerza'),
+                velocidad_inicial=item.get('velocidad_inicial'),
+                velocidad_final=item.get('velocidad_final'),
+                tipo_lubricacion=item.get('tipo_lubricacion'),
                 funcionamiento=item.get('funcionamiento'),
-                recomendaciones=item.get('recomendaciones')
+                partes_requeridas=item.get('partes_requeridas'),
+                recomendaciones=item.get('recomendaciones'),
+                imagen_maquina=item.get('imagen_maquina')
             )
             
             db.session.add(nueva_maquina)
