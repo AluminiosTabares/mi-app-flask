@@ -29,7 +29,7 @@ def migrar():
                 fabricante=item.get('fabricante'),
                 modelo=item.get('modelo'),
                 operador=item.get('operador'),
-                anio=item.get('anio'), # O item.get('año') si en el JSON está con ñ
+                anio=item.get('anio'), 
                 peso=item.get('peso'),
                 altura=item.get('altura'),
                 ancho=item.get('ancho'),
