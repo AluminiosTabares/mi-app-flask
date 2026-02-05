@@ -22,8 +22,7 @@ print("DATABASE_URL =", repr(os.getenv("DATABASE_URL")))
 
 RUTA_EXTINTORES = "extintores.json"  # Tu archivo está en la raíz del proyecto
 
-def abrir_navegador():
-    webbrowser.open("http://127.0.0.1:5000")
+
 
 
 def cargar_extintores():
@@ -45,8 +44,11 @@ app = Flask(__name__)
 app.secret_key = "clave_secreta_123"
 
 app.config["SQLALCHEMY_DATABASE_URI"] = os.getenv("DATABASE_URL")
-app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
+if app.config["SQLALCHEMY_DATABASE_URI"] and app.config["SQLALCHEMY_DATABASE_URI"].startswith("postgres://"):
+    # Render a veces da la URL como postgres://, pero SQLAlchemy necesita postgresql://
+    app.config["SQLALCHEMY_DATABASE_URI"] = app.config["SQLALCHEMY_DATABASE_URI"].replace("postgres://", "postgresql://", 1)
 
+app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
 db.init_app(app)
 
 # ========= CONFIGURACIÓN DE CORREO =========
@@ -414,7 +416,7 @@ def editar_ficha(codigo):
 
             if imagen and imagen.filename:
                 nombre_seguro = secure_filename(imagen.filename)
-                ruta_imagen = os.path.join("static", "imagenes", nombre_seguro)
+                ruta_imagen = os.path.join("static", "uploads", nombre_seguro)
                 imagen.save(ruta_imagen)
 
                 ficha["imagen_maquina"] = nombre_seguro
@@ -548,14 +550,17 @@ def probar_correo():
         return f"❌ Error al enviar correo: {str(e)}"
 
 
+# Mueve la revisión aquí arriba para que corra siempre al iniciar
+with app.app_context():
+    try:
+        revisar_extintores_vencidos()
+        print("✅ Revisión de extintores completada al iniciar.")
+    except Exception as e:
+        print(f"⚠️ No se pudo revisar extintores: {e}")
+
 if __name__ == "__main__":
-    revisar_extintores_vencidos()  # ✅ mantiene la revisión de extintores
-
-    # Abrir navegador automáticamente
-    threading.Timer(1.2, abrir_navegador).start()
-
-    # Ejecutar servidor Flask
-    app.run(debug=True, use_reloader=False)
+    # En tu PC seguirá funcionando con debug
+    app.run(debug=True)
 
 
 
