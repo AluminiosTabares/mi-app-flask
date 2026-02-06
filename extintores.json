@@ -5,7 +5,7 @@
         "tipo": "Multipropósito A B C",
         "capacidad": "10 libras",
         "fecha_vencimiento": "2025-09-01",
-        "notificado": false
+        "notificado": true
     },
     {
         "area": "Laminación",

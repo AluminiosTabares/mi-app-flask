@@ -64,7 +64,7 @@ mail = Mail(app)
 # ========= FUNCIÓN PARA ENVIAR CORREO =========
 def enviar_correo(asunto, mensaje_html):
     with app.app_context():
-        msg = Message(asunto, recipients=["angelorihuela72@gmail.com"])
+        msg = Message(asunto, recipients=["tabarescontabilidad@gmail.com"])
         msg.html = mensaje_html   # ✅ Ahora es HTML bonito
         mail.send(msg)
 
