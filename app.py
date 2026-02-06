@@ -55,9 +55,9 @@ db.init_app(app)
 app.config['MAIL_SERVER'] = 'smtp.gmail.com'
 app.config['MAIL_PORT'] = 587
 app.config['MAIL_USE_TLS'] = True
-app.config['MAIL_USERNAME'] = 'angelorihuela72@gmail.com'
-app.config['MAIL_PASSWORD'] = 'lbmkpnekpucawzcl'
-app.config['MAIL_DEFAULT_SENDER'] = 'angelorihuela72@gmail.com'
+app.config['MAIL_USERNAME'] = 'tabarescontabilidad@gmail.com'
+app.config['MAIL_PASSWORD'] = 'qutpsvvksmlrgbf'
+app.config['MAIL_DEFAULT_SENDER'] = 'tabarescontabilidad@gmail.com'
 
 mail = Mail(app)
 
