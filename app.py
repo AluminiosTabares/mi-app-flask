@@ -540,7 +540,7 @@ def probar_correo():
     try:
         msg = Message(
             subject="🚨 ALERTA EXTINTOR VENCIDO",
-            recipients=["angelorihuela72@gmail.com"],
+            recipients=["tabarescontabilidad@gmail.com"],
             body="Prueba de notificación automática de extintores."
         )
         mail.send(msg)
