@@ -51,21 +51,24 @@ if app.config["SQLALCHEMY_DATABASE_URI"] and app.config["SQLALCHEMY_DATABASE_URI
 app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
 db.init_app(app)
 
-# ========= CONFIGURACIÓN DE CORREO =========
+    # ========= CONFIGURACIÓN DE CORREO =========
+    # ========= CONFIGURACIÓN DE CORREO (FORZADA) =========
 app.config['MAIL_SERVER'] = 'smtp.gmail.com'
-app.config['MAIL_PORT'] = 587
-app.config['MAIL_USE_TLS'] = True
+app.config['MAIL_PORT'] = 465  # Cambiamos a 465
+app.config['MAIL_USE_SSL'] = True # Cambiamos TLS por SSL
+app.config['MAIL_USE_TLS'] = False
 app.config['MAIL_USERNAME'] = 'tabarescontabilidad@gmail.com'
-app.config['MAIL_PASSWORD'] = 'vjapueleyptlstrc'
-app.config['MAIL_DEFAULT_SENDER'] = 'tabarescontabilidad@gmail.com'
+app.config['MAIL_PASSWORD'] = 'vjapueleyptlstrc' # Tus 16 letras
+app.config['MAIL_DEFAULT_SENDER'] = ('Notificaciones Tabares', 'tabarescontabilidad@gmail.com')
 
 mail = Mail(app)
 
 # ========= FUNCIÓN PARA ENVIAR CORREO =========
 def enviar_correo(asunto, mensaje_html):
     with app.app_context():
-        msg = Message(asunto, recipients=["tabarescontabilidad@gmail.com"])
-        msg.html = mensaje_html   # ✅ Ahora es HTML bonito
+        # Usamos app.config para asegurarnos de que use el correo de la empresa
+        msg = Message(asunto, recipients=[app.config['MAIL_USERNAME']])
+        msg.html = mensaje_html
         mail.send(msg)
 
 
@@ -535,17 +538,18 @@ def admin_equipos():
 #ejecutar la aplicacion
 
 # ========= PRUEBA DE ENVÍO DE CORREO =========
+# ========= PRUEBA DE ENVÍO DE CORREO =========
 @app.route("/probar-correo")
 def probar_correo():
     try:
+        destinatario = app.config['MAIL_USERNAME']
         msg = Message(
-            subject="🚨 ALERTA EXTINTOR VENCIDO",
-            recipients=["tabarescontabilidad@gmail.com"],
-            body="Prueba de notificación automática de extintores."
+            subject="🚨 ALERTA SISTEMA TABARES",
+            recipients=[destinatario],
+            body=f"Este correo debe llegar a {destinatario}. Si lo ves, el sistema está listo."
         )
         mail.send(msg)
-        return "✅ Correo enviado correctamente. Revisa tu Gmail."
-    
+        return f"✅ Correo enviado a {destinatario}. Revisa la bandeja de entrada y SPAM."
     except Exception as e:
         return f"❌ Error al enviar correo: {str(e)}"
 
