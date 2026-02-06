@@ -7,21 +7,66 @@ body {
     color: #1c1c1e;
 }
 
-/* ======== ENCABEZADO ======== */
+
+/* ======== ENCABEZADO MODERNO ======== */
 header {
-    background: linear-gradient(90deg, #003366, #007bff);
-    color: white;
-    text-align: center;
-    padding: 30px 10px;
-    border-bottom-left-radius: 20px;
-    border-bottom-right-radius: 20px;
-    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+    background: #ffffff; /* Fondo blanco puro */
+    padding: 20px 0;
+    border-bottom: 1px solid #e0e6ed;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    position: sticky;
+    top: 0;
+    z-index: 1000;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.03); /* Sombra casi invisible */
 }
 
 header h1 {
     margin: 0;
-    font-size: 2.2rem;
-    font-weight: 600;
+    font-size: 1.6rem;
+    font-weight: 800;
+    letter-spacing: -0.5px;
+    color: #1a1a1a;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+/* El detalle de color: un círculo decorativo */
+header h1::before {
+    content: '';
+    width: 12px;
+    height: 12px;
+    background: #ff4757; /* Un rojo vibrante tipo extintor */
+    border-radius: 50%;
+    display: inline-block;
+}
+
+/* Mejora para el contenedor de volver */
+.volver-container {
+    margin-top: 20px;
+    display: flex;
+    justify-content: flex-start;
+}
+
+.btn-volver {
+    background: #f1f3f5;
+    color: #495057;
+    border: 1px solid #dee2e6;
+    padding: 10px 20px;
+    font-size: 0.9rem;
+    font-weight: 500;
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.btn-volver:hover {
+    background: #e9ecef;
+    color: #000;
+    transform: none; /* Quitamos el scale para algo más serio */
 }
 
 /* ======== CONTENIDO ======== */
