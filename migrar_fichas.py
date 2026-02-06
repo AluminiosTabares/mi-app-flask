@@ -1,6 +1,9 @@
+import os
 import json
 from app import app, db
 from models import Maquina, Accesorio, Historial
+from dotenv import load_dotenv
+load_dotenv()
 
 def migrar():
     # USAMOS encoding='utf-8' PARA EVITAR EL ERROR DE ACENTOS
