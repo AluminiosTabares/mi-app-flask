@@ -4,7 +4,7 @@
         "numero": 1,
         "tipo": "Multipropósito A B C",
         "capacidad": "10 libras",
-        "fecha_vencimiento": "2025-09-01",
+        "fecha_vencimiento": "2026-09-01",
         "notificado": true
     },
     {
@@ -12,7 +12,7 @@
         "numero": 2,
         "tipo": "Agua a presión A",
         "capacidad": "2.5 galones",
-        "fecha_vencimiento": "2025-04-01",
+        "fecha_vencimiento": "2026-04-01",
         "notificado": true
     },
     {
@@ -20,7 +20,7 @@
         "numero": 3,
         "tipo": "Multipropósito A B C",
         "capacidad": "10 libras",
-        "fecha_vencimiento": "2025-10-01",
+        "fecha_vencimiento": "2026-10-01",
         "notificado": true
     },
     {

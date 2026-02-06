@@ -189,7 +189,7 @@ def revisar_extintores_vencidos():
 #usuarios predefinidos con sus roles y contraseñas 
 usuarios = {
     "angel": {"password": "1", "rol": "admin"},
-    "luis": {"password": "1", "rol": "empleado"},
+    "luis": {"password": "1", "rol": "admin"},
     "karen": {"password": "1", "rol": "admin"}
 }
 
