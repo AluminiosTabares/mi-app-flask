@@ -155,9 +155,14 @@ def ver_ficha(codigo):
     if "rol" in session and session["rol"] in ["admin", "empleado"]:
         ficha = Maquina.query.filter_by(codigo=codigo).first()
         if ficha:
-            # Preparamos los datos JSON para la plantilla
-            ficha.accesorios_list = json.loads(ficha.accesorios) if ficha.accesorios else []
-            ficha.historial_list = json.loads(ficha.historial) if ficha.historial else []
+            # Convertimos los textos JSON de la DB a listas de Python
+            # Usamos getattr por si los campos vienen vacíos
+            accesorios_data = ficha.accesorios if ficha.accesorios else "[]"
+            historial_data = ficha.historial if ficha.historial else "[]"
+            
+            ficha.accesorios_list = json.loads(accesorios_data)
+            ficha.historial_list = json.loads(historial_data)
+            
             return render_template("ficha_maquina.html", ficha=ficha)
         return "Ficha no encontrada", 404
     return redirect(url_for("login"))
@@ -281,13 +286,22 @@ def editar_extintor(numero):
 # --- FILTROS Y EXTRAS ---
 
 @app.template_filter('datetimeformat') 
-def datetimeformat(value, format='%B %Y'):
+def datetimeformat(value, format='%d/%m/%Y'):
+    if not value:
+        return ""
+    # Si ya es un objeto datetime, lo formateamos
+    if isinstance(value, datetime):
+        return value.strftime(format)
+    # Si es un string, intentamos convertirlo
     if isinstance(value, str):
         try:
-            value = datetime.strptime(value, '%Y-%m-%d')
+            # Intentamos el formato estándar de la DB
+            fecha_dt = datetime.strptime(value, '%Y-%m-%d')
+            return fecha_dt.strftime(format)
         except:
+            # Si falla, devolvemos el texto original para no romper la app
             return value
-    return value.strftime(format)
+    return value
 
 if __name__ == "__main__":
     app.run(debug=True)
