@@ -298,3 +298,32 @@ h2 {
     background-color: #c82333;
 }
 
+/* ======== BOTÓN EDITAR (CORREGIDO) ======== */
+.btn-editar {
+    display: block;             /* Para que ocupe espacio propio */
+    margin: 15px auto 0 auto;   /* Centrado y con espacio arriba */
+    padding: 10px 20px;
+    background-color: #1a1a1a;  /* Negro elegante para que resalte sobre cualquier color de card */
+    color: #ffffff !important;  /* Texto blanco siempre */
+    border: none;
+    border-radius: 8px;
+    font-weight: 600;
+    font-size: 0.9rem;
+    text-decoration: none;      /* Quita el subrayado feo */
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+    width: fit-content;         /* Ajusta al tamaño del texto */
+}
+
+.btn-editar:hover {
+    background-color: #404040;
+    transform: translateY(-2px); /* Efecto de levante */
+    box-shadow: 0 6px 12px rgba(0,0,0,0.2);
+    color: #ffffff !important;
+}
+
+/* Opcional: Si quieres que el icono de lápiz se vea mejor */
+.btn-editar i {
+    margin-right: 8px;
+}
+
