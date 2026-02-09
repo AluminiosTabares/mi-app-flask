@@ -282,5 +282,59 @@ def datetimeformat(value, format='%B %Y'):
             return value
     return value.strftime(format)
 
+@app.route("/migrar_datos")
+def migrar():
+    if "rol" in session and session["rol"] == "admin":
+        # 1. Migrar Fichas
+        fichas_json = cargar_fichas()
+        for f in fichas_json:
+            # Verificamos si ya existe para no duplicar
+            if not Maquina.query.filter_by(codigo=f["codigo"]).first():
+                nueva = Maquina(
+                    codigo=f.get("codigo"),
+                    nombre=f.get("nombre"),
+                    ubicacion=f.get("ubicacion"),
+                    fabricante=f.get("fabricante"),
+                    modelo=f.get("modelo"),
+                    operador=f.get("operador"),
+                    anio=f.get("anio"),
+                    peso=f.get("peso"),
+                    altura=f.get("altura"),
+                    ancho=f.get("ancho"),
+                    largo=f.get("largo"),
+                    voltaje=f.get("voltaje"),
+                    motor_hp=f.get("motor_hp"),
+                    fuerza=f.get("fuerza"),
+                    velocidad_inicial=f.get("velocidad_inicial"),
+                    velocidad_final=f.get("velocidad_final"),
+                    tipo_lubricacion=f.get("tipo_lubricacion"),
+                    funcionamiento=f.get("funcionamiento"),
+                    partes_requeridas=f.get("partes_requeridas"),
+                    recomendaciones=f.get("recomendaciones"),
+                    # Convertimos listas a texto para la DB
+                    accesorios=json.dumps(f.get("accesorios", [])),
+                    historial=json.dumps(f.get("historial", [])),
+                    imagen_maquina=f.get("imagen_maquina")
+                )
+                db.session.add(nueva)
+
+        # 2. Migrar Extintores
+        extintores_json = cargar_extintores()
+        for e in extintores_json:
+            if not Extintor.query.filter_by(numero=e["numero"]).first():
+                nuevo_e = Extintor(
+                    numero=e.get("numero"),
+                    area=e.get("area"),
+                    tipo=e.get("tipo"),
+                    capacidad=e.get("capacidad"),
+                    fecha_vencimiento=e.get("fecha_vencimiento"),
+                    notificado=e.get("notificado", False)
+                )
+                db.session.add(nuevo_e)
+        
+        db.session.commit()
+        return "✅ Migración completada con éxito. Ya puedes ver los datos en la base de datos."
+    return "No tienes permiso", 403
+
 if __name__ == "__main__":
     app.run(debug=True)
