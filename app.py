@@ -14,33 +14,9 @@ from models import db, Maquina, Extintor
 
 load_dotenv()
 
-# Configuración de Archivos
-RUTA_EXTINTORES = "extintores.json"
-DATA_FILE = "fichas.json"
-
-def cargar_extintores():
-    if not os.path.exists(RUTA_EXTINTORES): 
-        return []
-    with open(RUTA_EXTINTORES, "r", encoding="utf-8") as f:
-        return json.load(f)
-
-def guardar_extintores(lista):
-    with open(RUTA_EXTINTORES, "w", encoding="utf-8") as f:
-        json.dump(lista, f, indent=4, ensure_ascii=False)
-
-def cargar_fichas():
-    if os.path.exists(DATA_FILE):
-        with open(DATA_FILE, "r", encoding="utf-8") as f:
-            return json.load(f)
-    return []
-
-def guardar_fichas(fichas):
-    with open(DATA_FILE, "w", encoding="utf-8") as f:
-        json.dump(fichas, f, indent=4, ensure_ascii=False)
-
 app = Flask(__name__)
 
-# CONFIGURACIÓN CLOUDINARY CORREGIDA PARA RENDER
+# CONFIGURACIÓN CLOUDINARY
 cloudinary.config( 
     cloudinary_url = os.environ.get('CLOUDINARY_URL') 
 )
@@ -66,35 +42,21 @@ app.config['MAIL_DEFAULT_SENDER'] = ('Notificaciones Tabares', 'tabarescontabili
 
 mail = Mail(app)
 
+# --- UTILIDADES ---
+
 def enviar_correo(asunto, mensaje_html):
     with app.app_context():
         msg = Message(asunto, recipients=[app.config['MAIL_USERNAME']])
         msg.html = mensaje_html
         mail.send(msg)
 
-def revisar_extintores_vencidos():
-    if not os.path.exists(RUTA_EXTINTORES): return
-    extintores = cargar_extintores()
-    hoy = datetime.now().date()
-    hubo_cambios = False
-
-    for e in extintores:
-        if e.get("notificado"): continue
-        fecha_v = datetime.strptime(e["fecha_vencimiento"], "%Y-%m-%d").date()
-        dias = (fecha_v - hoy).days
-        
-        if dias <= 0 or dias <= 7:
-            asunto = "⛔ EXTINTOR VENCIDO" if dias <= 0 else "🚨 EXTINTOR POR VENCER"
-            e["notificado"] = True
-            hubo_cambios = True
-
-    if hubo_cambios:
-        guardar_extintores(extintores)
-
+# Usuarios estáticos (Podrías moverlos a la DB luego si quieres)
 usuarios = {
     "administrador": {"password": "tabares2026", "rol": "admin"},
     "empleado": {"password": "tabares123", "rol": "empleado"}
 }
+
+# --- RUTAS DE AUTENTICACIÓN ---
 
 @app.route("/")
 def home():
@@ -116,24 +78,34 @@ def login():
             return "❌ Usuario o contraseña incorrectos"
     return render_template("login.html")
 
+@app.route("/logout")
+def logout():
+    session.clear()
+    return redirect(url_for("login"))
+
 @app.route("/admin/dashboard")
 def admin_dashboard():
     if "rol" in session and session["rol"] == "admin":
         return render_template("panel_control_adminl.html")
     return redirect(url_for("login"))
 
+# --- RUTAS DE FICHAS TÉCNICAS (MÁQUINAS) ---
+
 @app.route("/admin/fichas")
 def admin_fichas():
     if "rol" in session and session["rol"] in ["admin", "empleado"]:
-        # Esto consulta la base de datos PostgreSQL de Render directamente
-        fichas = Maquina.query.all() 
+        # Consulta directa a la DB
+        fichas = Maquina.query.all()
+        # Convertimos accesorios e historial de JSON string a lista para el HTML
+        for f in fichas:
+            f.accesorios_list = json.loads(f.accesorios) if f.accesorios else []
         return render_template("fichas_lista.html", fichas=fichas)
+    return redirect(url_for("login"))
 
 @app.route("/admin/fichas/nueva", methods=["GET", "POST"])
 def nueva_ficha():
     if "rol" in session and session["rol"] in ["admin", "empleado"]:
         if request.method == "POST":
-            fichas = cargar_fichas()
             imagen_maquina = request.files.get("imagen_maquina")
             ruta_img_maquina = None
             
@@ -144,134 +116,169 @@ def nueva_ficha():
                 except Exception as e:
                     print(f"❌ Error Cloudinary: {e}")
 
+            # Procesar accesorios como lista -> JSON String
             accesorios_lista = [a.strip() for a in request.form.get("accesorios", "").split(",") if a.strip()]
-
-            nueva = {
-                "codigo": request.form.get("codigo"),
-                "nombre": request.form.get("nombre"),
-                "ubicacion": request.form.get("ubicacion"),
-                "fabricante": request.form.get("fabricante"),
-                "modelo": request.form.get("modelo"),
-                "operador": request.form.get("operador"),
-                "anio": request.form.get("anio"),
-                "peso": request.form.get("peso"),
-                "altura": request.form.get("altura"),
-                "ancho": request.form.get("ancho"),
-                "largo": request.form.get("largo"),
-                "voltaje": request.form.get("voltaje"),
-                "motor_hp": request.form.get("motor_hp"),
-                "fuerza": request.form.get("fuerza"),
-                "velocidad_inicial": request.form.get("velocidad_inicial"),
-                "velocidad_final": request.form.get("velocidad_final"),
-                "tipo_lubricacion": request.form.get("tipo_lubricacion"),
-                "funcionamiento": request.form.get("funcionamiento"),
-                "partes_requeridas": request.form.get("partes_requeridas"),
-                "recomendaciones": request.form.get("recomendaciones"),
-                "accesorios": accesorios_lista,
-                "historial": [],
-                "imagen_maquina": ruta_img_maquina
-            }
-            fichas.append(nueva)
-            guardar_fichas(fichas)
+            
+            nueva = Maquina(
+                codigo=request.form.get("codigo"),
+                nombre=request.form.get("nombre"),
+                ubicacion=request.form.get("ubicacion"),
+                fabricante=request.form.get("fabricante"),
+                modelo=request.form.get("modelo"),
+                operador=request.form.get("operador"),
+                anio=request.form.get("anio"),
+                peso=request.form.get("peso"),
+                altura=request.form.get("altura"),
+                ancho=request.form.get("ancho"),
+                largo=request.form.get("largo"),
+                voltaje=request.form.get("voltaje"),
+                motor_hp=request.form.get("motor_hp"),
+                fuerza=request.form.get("fuerza"),
+                velocidad_inicial=request.form.get("velocidad_inicial"),
+                velocidad_final=request.form.get("velocidad_final"),
+                tipo_lubricacion=request.form.get("tipo_lubricacion"),
+                funcionamiento=request.form.get("funcionamiento"),
+                partes_requeridas=request.form.get("partes_requeridas"),
+                recomendaciones=request.form.get("recomendaciones"),
+                accesorios=json.dumps(accesorios_lista),
+                historial=json.dumps([]),
+                imagen_maquina=ruta_img_maquina
+            )
+            db.session.add(nueva)
+            db.session.commit()
             return redirect(url_for("admin_fichas"))
         return render_template("ficha_form.html")
+    return redirect(url_for("login"))
+
+@app.route("/fichas/<codigo>")
+def ver_ficha(codigo):
+    if "rol" in session and session["rol"] in ["admin", "empleado"]:
+        ficha = Maquina.query.filter_by(codigo=codigo).first()
+        if ficha:
+            # Preparamos los datos JSON para la plantilla
+            ficha.accesorios_list = json.loads(ficha.accesorios) if ficha.accesorios else []
+            ficha.historial_list = json.loads(ficha.historial) if ficha.historial else []
+            return render_template("ficha_maquina.html", ficha=ficha)
+        return "Ficha no encontrada", 404
     return redirect(url_for("login"))
 
 @app.route("/fichas/<codigo>/editar", methods=["GET", "POST"])
 def editar_ficha(codigo):
     if "rol" in session and session["rol"] in ["admin", "empleado"]:
-        fichas = cargar_fichas()
-        ficha = next((f for f in fichas if f["codigo"] == codigo), None)
-        if not ficha: return "❌ Ficha no encontrada"
+        ficha = Maquina.query.filter_by(codigo=codigo).first()
+        if not ficha: return "❌ Ficha no encontrada", 404
 
         if request.method == "POST":
-            campos = ["nombre", "fabricante", "modelo", "operador", "anio", "ubicacion", "peso", "altura", "ancho", "largo", "voltaje", "motor_hp", "fuerza", "velocidad_inicial", "velocidad_final", "tipo_lubricacion", "funcionamiento", "partes_requeridas", "recomendaciones"]
-            for campo in campos:
-                ficha[campo] = request.form.get(campo)
+            ficha.nombre = request.form.get("nombre")
+            ficha.fabricante = request.form.get("fabricante")
+            ficha.modelo = request.form.get("modelo")
+            ficha.operador = request.form.get("operador")
+            ficha.anio = request.form.get("anio")
+            ficha.ubicacion = request.form.get("ubicacion")
+            ficha.peso = request.form.get("peso")
+            ficha.altura = request.form.get("altura")
+            ficha.ancho = request.form.get("ancho")
+            ficha.largo = request.form.get("largo")
+            ficha.voltaje = request.form.get("voltaje")
+            ficha.motor_hp = request.form.get("motor_hp")
+            ficha.fuerza = request.form.get("fuerza")
+            ficha.velocidad_inicial = request.form.get("velocidad_inicial")
+            ficha.velocidad_final = request.form.get("velocidad_final")
+            ficha.tipo_lubricacion = request.form.get("tipo_lubricacion")
+            ficha.funcionamiento = request.form.get("funcionamiento")
+            ficha.partes_requeridas = request.form.get("partes_requeridas")
+            ficha.recomendaciones = request.form.get("recomendaciones")
             
-            ficha["accesorios"] = [a.strip() for a in request.form.get("accesorios", "").split(",") if a.strip()]
+            accesorios_lista = [a.strip() for a in request.form.get("accesorios", "").split(",") if a.strip()]
+            ficha.accesorios = json.dumps(accesorios_lista)
 
             imagen = request.files.get("imagen_maquina")
             if imagen and imagen.filename != '':
                 try:
                     upload_result = cloudinary.uploader.upload(imagen)
-                    ficha["imagen_maquina"] = upload_result["secure_url"]
+                    ficha.imagen_maquina = upload_result["secure_url"]
                 except Exception as e:
                     print(f"❌ Error Cloudinary Edit: {e}")
 
-            guardar_fichas(fichas)  
+            db.session.commit()
             return redirect(url_for("ver_ficha", codigo=codigo))
-        return render_template("editar_ficha.html", ficha=ficha)
-    return redirect(url_for("login"))
-
-@app.route("/extintores/editar/<int:numero>", methods=["GET", "POST"])
-def editar_extintor(numero):
-    if "rol" in session and session["rol"] == "admin":
-        extintores = cargar_extintores()
-        # Buscamos comparando ambos como enteros
-        extintor = next((e for e in extintores if int(e.get("numero", 0)) == numero), None)
         
-        if not extintor: 
-            return "❌ Extintor no encontrado", 404
-            
-        if request.method == "POST":
-            # Actualizamos el campo exacto que pusiste en el HTML
-            extintor["fecha_vencimiento"] = request.form.get("fecha")
-            guardar_extintores(extintores)
-            return redirect(url_for("admin_equipos"))
-            
-        return render_template("editar_extintor.html", extintor=extintor)
+        # Para el template de edición, convertimos el JSON a string separado por comas
+        ficha.accesorios_str = ", ".join(json.loads(ficha.accesorios)) if ficha.accesorios else ""
+        return render_template("editar_ficha.html", ficha=ficha)
     return redirect(url_for("login"))
 
 @app.route("/admin/fichas/<codigo>/agregar_historial", methods=["GET", "POST"])
 def agregar_historial(codigo):
     if "rol" in session and session["rol"] in ["admin", "empleado"]:
-        fichas = cargar_fichas()
-        ficha = next((f for f in fichas if f["codigo"] == codigo), None)
+        ficha = Maquina.query.filter_by(codigo=codigo).first()
         if not ficha: return "Ficha no encontrada", 404
+        
         if request.method == "POST":
-            nuevo = {
+            nuevo_evento = {
                 "fecha": request.form.get("fecha"),
                 "tipo": request.form.get("tipo"),
                 "descripcion": request.form.get("descripcion"),
                 "responsable": request.form.get("responsable"),
                 "observacion": request.form.get("observacion")
             }
-            if "historial" not in ficha: ficha["historial"] = []
-            ficha["historial"].append(nuevo)
-            guardar_fichas(fichas)
+            # Cargar historial actual, añadir y guardar
+            historial_actual = json.loads(ficha.historial) if ficha.historial else []
+            historial_actual.append(nuevo_evento)
+            ficha.historial = json.dumps(historial_actual)
+            
+            db.session.commit()
             return redirect(url_for("ver_ficha", codigo=codigo))
         return render_template("agregar_historial.html", ficha=ficha)
     return redirect(url_for("login"))
 
-@app.route("/fichas/<codigo>")
-def ver_ficha(codigo):
-    if "rol" in session and session["rol"] in ["admin", "empleado"]:
-        fichas = cargar_fichas()
-        ficha = next((f for f in fichas if f["codigo"] == codigo), None)
-        if ficha: return render_template("ficha_maquina.html", ficha=ficha)
-        return "Ficha no encontrada"
-    return redirect(url_for("login"))
+# --- RUTAS DE EQUIPOS (EXTINTORES) ---
 
 @app.route("/admin/equipos")
 def admin_equipos(): 
     if "rol" in session and session["rol"] == "admin":
-        extintores = cargar_extintores()
+        extintores = Extintor.query.order_by(Extintor.numero).all()
         hoy = datetime.today().date()
-        lista = []
+        lista_final = []
+        
         for e in extintores:
-            fecha_v = datetime.strptime(e["fecha_vencimiento"], "%Y-%m-%d").date()
-            dias = (fecha_v - hoy).days
-            estado = "Vencido" if dias < 0 else f"Vence en {dias} días" if dias <= 15 else "Vigente"
-            clase = "vencido" if dias < 0 else "por-vencer" if dias <= 15 else "vigente"
-            lista.append({**e, "estado": estado, "clase": clase, "fecha": e["fecha_vencimiento"]})
-        return render_template("extintores_index.html", extintores=lista)
+            try:
+                fecha_v = datetime.strptime(e.fecha_vencimiento, "%Y-%m-%d").date()
+                dias = (fecha_v - hoy).days
+                estado = "Vencido" if dias < 0 else f"Vence en {dias} días" if dias <= 15 else "Vigente"
+                clase = "vencido" if dias < 0 else "por-vencer" if dias <= 15 else "vigente"
+            except:
+                estado, clase = "Error Fecha", ""
+
+            lista_final.append({
+                "id": e.id,
+                "numero": e.numero,
+                "area": e.area,
+                "tipo": e.tipo,
+                "capacidad": e.capacidad,
+                "fecha": e.fecha_vencimiento,
+                "estado": estado,
+                "clase": clase
+            })
+        return render_template("extintores_index.html", extintores=lista_final)
     return redirect(url_for("login"))
 
-@app.route("/logout")
-def logout():
-    session.clear()
+@app.route("/extintores/editar/<int:numero>", methods=["GET", "POST"])
+def editar_extintor(numero):
+    if "rol" in session and session["rol"] == "admin":
+        extintor = Extintor.query.filter_by(numero=numero).first()
+        if not extintor: return "❌ Extintor no encontrado", 404
+            
+        if request.method == "POST":
+            extintor.fecha_vencimiento = request.form.get("fecha")
+            extintor.notificado = False # Resetear notificación al actualizar fecha
+            db.session.commit()
+            return redirect(url_for("admin_equipos"))
+            
+        return render_template("editar_extintor.html", extintor=extintor)
     return redirect(url_for("login"))
+
+# --- FILTROS Y EXTRAS ---
 
 @app.template_filter('datetimeformat') 
 def datetimeformat(value, format='%B %Y'):
@@ -281,72 +288,6 @@ def datetimeformat(value, format='%B %Y'):
         except:
             return value
     return value.strftime(format)
-
-@app.route("/migrar_datos")
-def migrar():
-    from models import Maquina, Extintor 
-    
-    if "rol" in session and session["rol"] == "admin":
-        try:
-            # ESTA LÍNEA ES LA CLAVE: Crea las tablas si no existen justo ahora
-            db.create_all() 
-            
-            # 1. Migrar Fichas de Máquinas
-            fichas_json = cargar_fichas()
-            for f in fichas_json:
-                if not Maquina.query.filter_by(codigo=f.get("codigo")).first():
-                    acc_text = json.dumps(f.get("accesorios", []))
-                    hist_text = json.dumps(f.get("historial", []))
-                    
-                    nueva = Maquina(
-                        codigo=f.get("codigo"),
-                        nombre=f.get("nombre"),
-                        ubicacion=f.get("ubicacion"),
-                        fabricante=f.get("fabricante", ""),
-                        modelo=f.get("modelo", ""),
-                        operador=f.get("operador", ""),
-                        anio=str(f.get("anio", "")),
-                        peso=str(f.get("peso", "")),
-                        altura=str(f.get("altura", "")),
-                        ancho=str(f.get("ancho", "")),
-                        largo=str(f.get("largo", "")),
-                        voltaje=str(f.get("voltaje", "")),
-                        motor_hp=str(f.get("motor_hp", "")),
-                        fuerza=str(f.get("fuerza", "")),
-                        velocidad_inicial=str(f.get("velocidad_inicial", "")),
-                        velocidad_final=str(f.get("velocidad_final", "")),
-                        tipo_lubricacion=f.get("tipo_lubricacion", ""),
-                        funcionamiento=f.get("funcionamiento", ""),
-                        partes_requeridas=f.get("partes_requeridas", ""),
-                        recomendaciones=f.get("recomendaciones", ""),
-                        accesorios=acc_text,
-                        historial=hist_text,
-                        imagen_maquina=f.get("imagen_maquina")
-                    )
-                    db.session.add(nueva)
-
-            # 2. Migrar Extintores
-            extintores_json = cargar_extintores()
-            for e in extintores_json:
-                if not Extintor.query.filter_by(numero=e.get("numero")).first():
-                    nuevo_e = Extintor(
-                        numero=e.get("numero"),
-                        area=e.get("area"),
-                        tipo=e.get("tipo"),
-                        capacidad=e.get("capacidad"),
-                        fecha_vencimiento=e.get("fecha_vencimiento"),
-                        notificado=e.get("notificado", False)
-                    )
-                    db.session.add(nuevo_e)
-            
-            db.session.commit() 
-            return "✅ ¡Tablas creadas y datos migrados con éxito!"
-            
-        except Exception as e:
-            db.session.rollback()
-            return f"❌ Error: {str(e)}"
-            
-    return "No tienes permiso.", 403
 
 if __name__ == "__main__":
     app.run(debug=True)
