@@ -204,6 +204,25 @@ def editar_ficha(codigo):
         return render_template("editar_ficha.html", ficha=ficha)
     return redirect(url_for("login"))
 
+@app.route("/extintores/editar/<int:numero>", methods=["GET", "POST"])
+def editar_extintor(numero):
+    if "rol" in session and session["rol"] == "admin":
+        extintores = cargar_extintores()
+        # Buscamos comparando ambos como enteros
+        extintor = next((e for e in extintores if int(e.get("numero", 0)) == numero), None)
+        
+        if not extintor: 
+            return "❌ Extintor no encontrado", 404
+            
+        if request.method == "POST":
+            # Actualizamos el campo exacto que pusiste en el HTML
+            extintor["fecha_vencimiento"] = request.form.get("fecha")
+            guardar_extintores(extintores)
+            return redirect(url_for("admin_equipos"))
+            
+        return render_template("editar_extintor.html", extintor=extintor)
+    return redirect(url_for("login"))
+
 @app.route("/admin/fichas/<codigo>/agregar_historial", methods=["GET", "POST"])
 def agregar_historial(codigo):
     if "rol" in session and session["rol"] in ["admin", "empleado"]:
