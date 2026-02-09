@@ -316,10 +316,10 @@
         </div>
 
         <!-- COLUMNA 3 (IMAGEN) -->
-        <div class="imagen-maquina">
+<div class="imagen-maquina">
     {% if ficha.imagen_maquina %}
         <img 
-            src="{{ url_for('static', filename='imagenes/' + ficha.imagen_maquina) }}" 
+            src="{{ ficha.imagen_maquina }}" 
             alt="Imagen de la máquina"
             style="max-width: 300px; border-radius: 10px;"
         >
@@ -419,7 +419,7 @@
     </a>
 </div>
 
-{% if session['rol'] == 'admin' %}
+{% if session['rol'] in ['admin', 'empleado'] %}
     <a href="{{ url_for('editar_ficha', codigo=ficha.codigo) }}" class="btn-editar">✏️ Editar ficha</a>
 {% endif %}
 
