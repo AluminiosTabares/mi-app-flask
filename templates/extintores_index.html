@@ -48,7 +48,7 @@
                     <p><strong>Capacidad:</strong> {{ e.capacidad }}</p>
                     <p><strong>Vence:</strong> {{ e.fecha }}</p>
 
-                    <a href="{{ url_for('editar_extintor', numero=e.numero) }}"
+                    <a href="{{ url_for('editar_extintor', numero=e.numero|int) }}">
    class="btn-editar 
         {% if 'multipropósito' in e.tipo|lower or 'multiproposito' in e.tipo|lower %}
             multiproposito
