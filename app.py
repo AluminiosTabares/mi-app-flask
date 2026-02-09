@@ -10,7 +10,7 @@ from flask_mail import Mail, Message
 from flask_sqlalchemy import SQLAlchemy
 from dotenv import load_dotenv
 from werkzeug.utils import secure_filename
-from models import db
+from models import db, Maquina, Extintor
 
 load_dotenv()
 
