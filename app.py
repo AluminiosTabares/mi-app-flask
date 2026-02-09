@@ -155,13 +155,25 @@ def ver_ficha(codigo):
     if "rol" in session and session["rol"] in ["admin", "empleado"]:
         ficha = Maquina.query.filter_by(codigo=codigo).first()
         if ficha:
-            # Convertimos los textos JSON de la DB a listas de Python
-            # Usamos getattr por si los campos vienen vacíos
-            accesorios_data = ficha.accesorios if ficha.accesorios else "[]"
-            historial_data = ficha.historial if ficha.historial else "[]"
-            
-            ficha.accesorios_list = json.loads(accesorios_data)
-            ficha.historial_list = json.loads(historial_data)
+            # --- CORRECCIÓN DE ACCESORIOS ---
+            try:
+                # Si es un string que parece JSON (tiene []), lo convertimos a lista
+                if isinstance(ficha.accesorios, str) and "[" in ficha.accesorios:
+                    ficha.accesorios_list = json.loads(ficha.accesorios)
+                else:
+                    # Si ya es lista o es un formato simple, lo manejamos así
+                    ficha.accesorios_list = [ficha.accesorios] if ficha.accesorios else []
+            except Exception:
+                ficha.accesorios_list = []
+
+            # --- CORRECCIÓN DE HISTORIAL ---
+            try:
+                if isinstance(ficha.historial, str) and "[" in ficha.historial:
+                    ficha.historial_list = json.loads(ficha.historial)
+                else:
+                    ficha.historial_list = []
+            except Exception:
+                ficha.historial_list = []
             
             return render_template("ficha_maquina.html", ficha=ficha)
         return "Ficha no encontrada", 404
