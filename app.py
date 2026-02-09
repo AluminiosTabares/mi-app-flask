@@ -41,9 +41,11 @@ def guardar_fichas(fichas):
 app = Flask(__name__)
 
 # Configuración Cloudinary
-cloudinary.config(
-  cloudinary_url = os.getenv('CLOUDINARY_URL')
-)
+cloudinary.config( 
+    cloud_name = os.environ.get('CLOUDINARY_CLOUD_NAME'), 
+    api_key = os.environ.get('CLOUDINARY_API_KEY'), 
+    api_secret = os.environ.get('CLOUDINARY_API_SECRET') 
+    )
 
 app.secret_key = "clave_secreta_123"
 
