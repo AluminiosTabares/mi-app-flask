@@ -125,9 +125,9 @@ def admin_dashboard():
 @app.route("/admin/fichas")
 def admin_fichas():
     if "rol" in session and session["rol"] in ["admin", "empleado"]:
-        fichas = cargar_fichas()
+        # Esto consulta la base de datos PostgreSQL de Render directamente
+        fichas = Maquina.query.all() 
         return render_template("fichas_lista.html", fichas=fichas)
-    return redirect(url_for("login"))
 
 @app.route("/admin/fichas/nueva", methods=["GET", "POST"])
 def nueva_ficha():
