@@ -291,9 +291,9 @@
 
         <div class="bloque">
             <h2>Accesorios Principales</h2>
-            {% if ficha.accesorios and ficha.accesorios|length > 0 %}
+            {% if ficha.accesorios_list and ficha.accesorios_list|length > 0 %}
                 <ul style="margin: 5px 0; padding-left: 20px;">
-                {% for acc in ficha.accesorios %}
+                {% for acc in ficha.accesorios_list %}
                     {% if acc.strip() %}<li>{{ acc.strip() }}</li>{% endif %}
                 {% endfor %}
                 </ul>
@@ -315,8 +315,8 @@
                     </tr>
                 </thead>
                 <tbody>
-                    {% if ficha.historial %}
-                        {% for item in ficha.historial %}
+                    {% if ficha.historial_list %}
+                        {% for item in ficha.historial_list %}
                         <tr>
                             <td>{{ item.fecha | datetimeformat('%d/%m/%Y') }}</td>
                             <td>{{ item.tipo }}</td>
