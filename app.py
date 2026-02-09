@@ -40,8 +40,7 @@ def guardar_fichas(fichas):
 
 app = Flask(__name__)
 
-# Configuración Cloudinary
-# Configuración Cloudinary simplificada
+# CONFIGURACIÓN CLOUDINARY CORREGIDA PARA RENDER
 cloudinary.config( 
     cloudinary_url = os.environ.get('CLOUDINARY_URL') 
 )
@@ -86,21 +85,16 @@ def revisar_extintores_vencidos():
         
         if dias <= 0 or dias <= 7:
             asunto = "⛔ EXTINTOR VENCIDO" if dias <= 0 else "🚨 EXTINTOR POR VENCER"
-            # (Aquí va tu mensaje_html largo que ya tienes...)
-            # Por brevedad no repito todo el HTML del correo aquí
             e["notificado"] = True
             hubo_cambios = True
 
     if hubo_cambios:
         guardar_extintores(extintores)
 
-# ========== USUARIOS ==========
 usuarios = {
     "administrador": {"password": "tabares2026", "rol": "admin"},
     "empleado": {"password": "tabares123", "rol": "empleado"}
 }
-
-# ========== RUTAS DE ACCESO ==========
 
 @app.route("/")
 def home():
@@ -111,11 +105,9 @@ def login():
     if request.method == "POST":
         usuario = request.form["usuario"].lower()
         contrasena = request.form["contrasena"]
-
         if usuario in usuarios and usuarios[usuario]["password"] == contrasena:
             session["usuario"] = usuario
             session["rol"] = usuarios[usuario]["rol"]
-
             if session["rol"] == "admin":
                 return redirect(url_for("admin_dashboard"))
             else:
@@ -130,8 +122,6 @@ def admin_dashboard():
         return render_template("panel_control_adminl.html")
     return redirect(url_for("login"))
 
-# ========== GESTIÓN DE FICHAS (ADMIN Y EMPLEADO) ==========
-
 @app.route("/admin/fichas")
 def admin_fichas():
     if "rol" in session and session["rol"] in ["admin", "empleado"]:
@@ -139,10 +129,8 @@ def admin_fichas():
         return render_template("fichas_lista.html", fichas=fichas)
     return redirect(url_for("login"))
 
-# ========== MODIFICACIÓN DE RUTA: NUEVA FICHA ==========
 @app.route("/admin/fichas/nueva", methods=["GET", "POST"])
 def nueva_ficha():
-    # El empleado y el admin pueden entrar aquí
     if "rol" in session and session["rol"] in ["admin", "empleado"]:
         if request.method == "POST":
             fichas = cargar_fichas()
@@ -151,7 +139,6 @@ def nueva_ficha():
             
             if imagen_maquina and imagen_maquina.filename != '':
                 try:
-                    # Subida a Cloudinary
                     upload_result = cloudinary.uploader.upload(imagen_maquina)
                     ruta_img_maquina = upload_result["secure_url"]
                 except Exception as e:
@@ -190,37 +177,31 @@ def nueva_ficha():
         return render_template("ficha_form.html")
     return redirect(url_for("login"))
 
-# ========== MODIFICACIÓN DE RUTA: EDITAR FICHA (CORREGIDA LA IMAGEN) ==========
 @app.route("/fichas/<codigo>/editar", methods=["GET", "POST"])
 def editar_ficha(codigo):
-    # El empleado y el admin pueden entrar aquí
     if "rol" in session and session["rol"] in ["admin", "empleado"]:
         fichas = cargar_fichas()
         ficha = next((f for f in fichas if f["codigo"] == codigo), None)
         if not ficha: return "❌ Ficha no encontrada"
 
         if request.method == "POST":
-            # Actualizamos datos de texto
             campos = ["nombre", "fabricante", "modelo", "operador", "anio", "ubicacion", "peso", "altura", "ancho", "largo", "voltaje", "motor_hp", "fuerza", "velocidad_inicial", "velocidad_final", "tipo_lubricacion", "funcionamiento", "partes_requeridas", "recomendaciones"]
             for campo in campos:
                 ficha[campo] = request.form.get(campo)
             
             ficha["accesorios"] = [a.strip() for a in request.form.get("accesorios", "").split(",") if a.strip()]
 
-            # CORRECCIÓN DE IMAGEN: Subir a Cloudinary si se selecciona una nueva
             imagen = request.files.get("imagen_maquina")
             if imagen and imagen.filename != '':
                 try:
                     upload_result = cloudinary.uploader.upload(imagen)
                     ficha["imagen_maquina"] = upload_result["secure_url"]
-                    print(f"✅ Nueva imagen subida: {ficha['imagen_maquina']}")
                 except Exception as e:
-                    print(f"❌ Error al actualizar imagen en Cloudinary: {e}")
+                    print(f"❌ Error Cloudinary Edit: {e}")
 
             guardar_fichas(fichas)  
             return redirect(url_for("ver_ficha", codigo=codigo))
         return render_template("editar_ficha.html", ficha=ficha)
-    return redirect(url_for("login"))
     return redirect(url_for("login"))
 
 @app.route("/admin/fichas/<codigo>/agregar_historial", methods=["GET", "POST"])
@@ -229,7 +210,6 @@ def agregar_historial(codigo):
         fichas = cargar_fichas()
         ficha = next((f for f in fichas if f["codigo"] == codigo), None)
         if not ficha: return "Ficha no encontrada", 404
-
         if request.method == "POST":
             nuevo = {
                 "fecha": request.form.get("fecha"),
@@ -254,8 +234,6 @@ def ver_ficha(codigo):
         return "Ficha no encontrada"
     return redirect(url_for("login"))
 
-# ========== GESTIÓN DE EXTINTORES (SOLO ADMIN) ==========
-
 @app.route("/admin/equipos")
 def admin_equipos(): 
     if "rol" in session and session["rol"] == "admin":
@@ -269,22 +247,6 @@ def admin_equipos():
             clase = "vencido" if dias < 0 else "por-vencer" if dias <= 15 else "vigente"
             lista.append({**e, "estado": estado, "clase": clase, "fecha": e["fecha_vencimiento"]})
         return render_template("extintores_index.html", extintores=lista)
-    
-    if "usuario" in session:
-        return "⚠️ Acceso denegado: Solo el administrador puede gestionar extintores.", 403
-    return redirect(url_for("login"))
-
-@app.route("/extintores/editar/<int:numero>", methods=["GET", "POST"])
-def editar_extintor(numero):
-    if "rol" in session and session["rol"] == "admin":
-        extintores = cargar_extintores()
-        extintor = next((e for e in extintores if int(e["numero"]) == numero), None)
-        if not extintor: return "❌ Extintor no encontrado"
-        if request.method == "POST":
-            extintor["fecha_vencimiento"] = request.form.get("fecha")
-            guardar_extintores(extintores)
-            return redirect(url_for("admin_equipos"))
-        return render_template("editar_extintor.html", extintor=extintor)
     return redirect(url_for("login"))
 
 @app.route("/logout")
@@ -295,14 +257,11 @@ def logout():
 @app.template_filter('datetimeformat') 
 def datetimeformat(value, format='%B %Y'):
     if isinstance(value, str):
-        value = datetime.strptime(value, '%Y-%m-%d')
+        try:
+            value = datetime.strptime(value, '%Y-%m-%d')
+        except:
+            return value
     return value.strftime(format)
-
-with app.app_context():
-    try:
-        revisar_extintores_vencidos()
-    except Exception as e:
-        print(f"⚠️ Error revisión: {e}")
 
 if __name__ == "__main__":
     app.run(debug=True)
