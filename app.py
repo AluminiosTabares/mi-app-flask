@@ -9,6 +9,9 @@ import json
 import os
 import threading
 import webbrowser
+import cloudinary
+import cloudinary.uploader
+from cloudinary.utils import cloudinary_url
 from flask_mail import Mail, Message
 from flask_sqlalchemy import SQLAlchemy
 from dotenv import load_dotenv
@@ -41,6 +44,9 @@ os.makedirs(UPLOAD_FOLDER, exist_ok=True) #crear carpetas de subida si no existe
 
 
 app = Flask(__name__)
+cloudinary.config(
+  cloudinary_url = os.getenv('CLOUDINARY_URL')
+)
 app.secret_key = "clave_secreta_123"
 
 app.config["SQLALCHEMY_DATABASE_URI"] = os.getenv("DATABASE_URL")
@@ -268,16 +274,17 @@ def nueva_ficha():
 
             imagen_maquina = request.files.get("imagen_maquina")
             ruta_img_maquina = None
+            
             if imagen_maquina and imagen_maquina.filename != '':
-                # Asegurar nombre seguro y único
-                nombre_seguro = secure_filename(imagen_maquina.filename)
-                nombre_final = f"{datetime.now().strftime('%Y%m%d%H%M%S')}_{nombre_seguro}"
-                ruta = os.path.join(UPLOAD_FOLDER, nombre_final)
-
-                imagen_maquina.save(ruta)
-                # Guardar solo la ruta relativa (para usar con url_for('static'))
-                ruta_img_maquina = f"uploads/{nombre_final}"
-
+                try:
+                    # 1. Subir directamente a Cloudinary
+                    upload_result = cloudinary.uploader.upload(imagen_maquina)
+                    # 2. Guardamos la URL segura que nos da la nube
+                    ruta_img_maquina = upload_result["secure_url"]
+                    print(f"✅ Imagen subida a Cloudinary: {ruta_img_maquina}")
+                except Exception as e:
+                    print(f"❌ Error al subir a Cloudinary: {e}")
+                    ruta_img_maquina = None
 
             # Leer los accesorios (separados por coma)
             accesorios_texto = request.form.get("accesorios", "")
@@ -293,7 +300,6 @@ def nueva_ficha():
                     "responsable": request.form.get("historial_responsable"),
                     "observacion": request.form.get("historial_observacion")
                 })
-
 
             # Crear nueva ficha con todos los datos
             nueva = {
@@ -317,9 +323,9 @@ def nueva_ficha():
                 "funcionamiento": request.form.get("funcionamiento"),
                 "partes_requeridas": request.form.get("partes_requeridas"),
                 "recomendaciones": request.form.get("recomendaciones"),
-                "accesorios": accesorios_lista,  # 🔹 lista limpia
+                "accesorios": accesorios_lista,
                 "historial": historial,
-                "imagen_maquina": ruta_img_maquina
+                "imagen_maquina": ruta_img_maquina  # Aquí se guarda el link de la nube
             }
             fichas.append(nueva)
             guardar_fichas(fichas)
