@@ -134,8 +134,7 @@
 </head>
 
 <body>
-    <form method="POST" enctype="multipart/form-data">
-        <h1>Editar ficha técnica: {{ ficha.nombre }}</h1>
+<form action="{{ url_for('editar_ficha', codigo=ficha.codigo) }}" method="POST" enctype="multipart/form-data">        <h1>Editar ficha técnica: {{ ficha.nombre }}</h1>
 
         <h3>Imagen de la máquina</h3>
 
