@@ -53,12 +53,14 @@
 <div class="card">
     <h2>Editar Extintor #{{ extintor.numero }}</h2>
 
-    <form method="POST">
+    <form action="{{ url_for('editar_extintor', numero=extintor.numero|int) }}" method="POST">
         <label>Nueva fecha de vencimiento:</label>
-        <input type="date" name="fecha" value="{{ extintor.fecha }}">
+        <input type="date" name="fecha" value="{{ extintor.fecha_vencimiento }}">
 
-        <button>Guardar cambios</button>
+        <button type="submit">Guardar cambios</button>
     </form>
+    <br>
+    <a href="{{ url_for('admin_equipos') }}" style="display:block; text-align:center; color:#666; text-decoration:none;">Cancelar</a>
 </div>
 
 </body>
