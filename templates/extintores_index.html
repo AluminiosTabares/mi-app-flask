@@ -48,17 +48,9 @@
                     <p><strong>Capacidad:</strong> {{ e.capacidad }}</p>
                     <p><strong>Vence:</strong> {{ e.fecha }}</p>
 
-                    <a href="{{ url_for('editar_extintor', numero=e.numero|int) }}">
-   class="btn-editar 
-        {% if 'multipropósito' in e.tipo|lower or 'multiproposito' in e.tipo|lower %}
-            multiproposito
-        {% elif 'polvo' in e.tipo|lower or 'gas' in e.tipo|lower %}
-            quimico
-        {% elif 'agua' in e.tipo|lower %}
-            agua
-        {% endif %}
-   ">
-   Editar
+                    <a href="{{ url_for('editar_extintor', numero=e.numero|int) }}" 
+   class="btn-editar {% if 'agua' in e.tipo|lower %}agua{% elif 'quimico' in e.tipo|lower %}quimico{% else %}multiproposito{% endif %}">
+    ✏️ Editar
 </a>
 
 
