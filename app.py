@@ -23,6 +23,9 @@ cloudinary.config(
 
 app.secret_key = "clave_secreta_123"
 
+# Permitir subidas de hasta 16 Megabytes
+app.config['MAX_CONTENT_LENGTH'] = 16 * 1024 * 1024
+
 # Configuración DB
 app.config["SQLALCHEMY_DATABASE_URI"] = os.getenv("DATABASE_URL")
 if app.config["SQLALCHEMY_DATABASE_URI"] and app.config["SQLALCHEMY_DATABASE_URI"].startswith("postgres://"):
