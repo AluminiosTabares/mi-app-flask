@@ -138,8 +138,10 @@ def admin_fichas():
         return render_template("fichas_lista.html", fichas=fichas)
     return redirect(url_for("login"))
 
+# ========== MODIFICACIÓN DE RUTA: NUEVA FICHA ==========
 @app.route("/admin/fichas/nueva", methods=["GET", "POST"])
 def nueva_ficha():
+    # El empleado y el admin pueden entrar aquí
     if "rol" in session and session["rol"] in ["admin", "empleado"]:
         if request.method == "POST":
             fichas = cargar_fichas()
@@ -148,6 +150,7 @@ def nueva_ficha():
             
             if imagen_maquina and imagen_maquina.filename != '':
                 try:
+                    # Subida a Cloudinary
                     upload_result = cloudinary.uploader.upload(imagen_maquina)
                     ruta_img_maquina = upload_result["secure_url"]
                 except Exception as e:
@@ -186,33 +189,37 @@ def nueva_ficha():
         return render_template("ficha_form.html")
     return redirect(url_for("login"))
 
+# ========== MODIFICACIÓN DE RUTA: EDITAR FICHA (CORREGIDA LA IMAGEN) ==========
 @app.route("/fichas/<codigo>/editar", methods=["GET", "POST"])
 def editar_ficha(codigo):
+    # El empleado y el admin pueden entrar aquí
     if "rol" in session and session["rol"] in ["admin", "empleado"]:
         fichas = cargar_fichas()
         ficha = next((f for f in fichas if f["codigo"] == codigo), None)
         if not ficha: return "❌ Ficha no encontrada"
 
         if request.method == "POST":
-            # Actualización de campos
+            # Actualizamos datos de texto
             campos = ["nombre", "fabricante", "modelo", "operador", "anio", "ubicacion", "peso", "altura", "ancho", "largo", "voltaje", "motor_hp", "fuerza", "velocidad_inicial", "velocidad_final", "tipo_lubricacion", "funcionamiento", "partes_requeridas", "recomendaciones"]
             for campo in campos:
                 ficha[campo] = request.form.get(campo)
             
             ficha["accesorios"] = [a.strip() for a in request.form.get("accesorios", "").split(",") if a.strip()]
 
-            # Imagen Cloudinary en Edición
+            # CORRECCIÓN DE IMAGEN: Subir a Cloudinary si se selecciona una nueva
             imagen = request.files.get("imagen_maquina")
-            if imagen and imagen.filename:
+            if imagen and imagen.filename != '':
                 try:
                     upload_result = cloudinary.uploader.upload(imagen)
                     ficha["imagen_maquina"] = upload_result["secure_url"]
+                    print(f"✅ Nueva imagen subida: {ficha['imagen_maquina']}")
                 except Exception as e:
-                    print(f"❌ Error Cloudinary Edición: {e}")
+                    print(f"❌ Error al actualizar imagen en Cloudinary: {e}")
 
             guardar_fichas(fichas)  
             return redirect(url_for("ver_ficha", codigo=codigo))
         return render_template("editar_ficha.html", ficha=ficha)
+    return redirect(url_for("login"))
     return redirect(url_for("login"))
 
 @app.route("/admin/fichas/<codigo>/agregar_historial", methods=["GET", "POST"])
