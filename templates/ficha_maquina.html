@@ -318,15 +318,15 @@
         <!-- COLUMNA 3 (IMAGEN) -->
 <div class="imagen-maquina">
     {% if ficha.imagen_maquina %}
-        <img 
-            src="{{ ficha.imagen_maquina }}" 
-            alt="Imagen de la máquina"
-            style="max-width: 300px; border-radius: 10px;"
-        >
+        {% if "http" in ficha.imagen_maquina %}
+            {# Es una imagen nueva de Cloudinary #}
+            <img src="{{ ficha.imagen_maquina }}" alt="Imagen de la máquina">
+        {% else %}
+            {# Es una imagen vieja que está en tu carpeta static #}
+            <img src="{{ url_for('static', filename='imagenes/' + ficha.imagen_maquina) }}" alt="Imagen vieja">
+        {% endif %}
     {% else %}
-        <div style="width:160px;height:160px;display:flex;align-items:center;justify-content:center;border:2px dashed #aac3df;background:#f0f6fd;color:#4a6ea9;font-size:12px;border-radius:6px;">
-            FOTO<br>MAQUINA
-        </div>
+        <div class="foto-vacia">FOTO MAQUINA</div>
     {% endif %}
 </div>
 
