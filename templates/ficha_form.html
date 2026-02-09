@@ -132,8 +132,7 @@
 </head>
 <body>
 
-<form method="POST" enctype="multipart/form-data">
-    <label>Código:</label>
+<form action="{{ url_for('nueva_ficha') }}" method="POST" enctype="multipart/form-data">    <label>Código:</label>
     <input type="text" name="codigo">
 
     <label>Nombre del equipo:</label>
