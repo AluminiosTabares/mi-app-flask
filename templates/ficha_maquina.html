@@ -151,7 +151,7 @@
 </div>
 
         <div class="encabezado-ficha">
-            <img src="{{ url_for('static', filename='img/logoTabares.png') }}" alt="Logo" class="logo-ficha">
+            <img src="{{ 'https://tu-app.onrender.com' + url_for('static', filename='img/logoTabares.png') if es_pdf else url_for('static', filename='img/logoTabares.png') }}" alt="Logo" class="logo-ficha">
             <h1>Ficha Técnica de Maquinaria</h1>
         </div>
 
@@ -175,11 +175,17 @@
                     <div class="campo"><span class="label">Fuerza:</span><span class="valor">{{ ficha.fuerza or "-" }}</span></div>
                 </div>
                 <div class="imagen-maquina">
-                    {% if ficha.imagen_maquina %}
-                        <img src="{{ ficha.imagen_maquina if 'http' in ficha.imagen_maquina else url_for('static', filename='imagenes/' + ficha.imagen_maquina) }}" alt="Foto">
-                    {% else %}
-                        <div class="foto-vacia" style="display:flex; align-items:center; justify-content:center; border: 2px dashed #ccc; color: #999; text-align:center;">SIN REGISTRO FOTOGRÁFICO</div>
-                    {% endif %}
+                   {% if ficha.imagen_maquina %}
+    {% if "http" in ficha.imagen_maquina %}
+        {# Si ya es de Cloudinary (http), el PDF la lee bien #}
+        <img src="{{ ficha.imagen_maquina }}" alt="Foto">
+    {% else %}
+        {# Si es local, le ponemos la URL completa #}
+        <img src="{{ 'https://tu-app.onrender.com' + url_for('static', filename='imagenes/' + ficha.imagen_maquina) if es_pdf else url_for('static', filename='imagenes/' + ficha.imagen_maquina) }}" alt="Foto">
+    {% endif %}
+{% else %}
+    <div class="foto-vacia">SIN REGISTRO FOTOGRÁFICO</div>
+{% endif %}
                 </div>
             </div>
             <div style="margin-top: 10px; display: grid; grid-template-columns: 1fr 1fr; gap: 20px;">
