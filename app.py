@@ -168,8 +168,8 @@ def descargar_pdf(codigo):
                 ficha.accesorios_list = []
                 ficha.historial_list = []
 
-            # Renderizamos el HTML de la ficha pero para el PDF
-            html_renderizado = render_template("ficha_maquina.html", ficha=ficha)
+            # Agregamos es_pdf=True para que el HTML use URLs absolutas
+            html_renderizado = render_template("ficha_maquina.html", ficha=ficha, es_pdf=True)
 
             # Opciones del PDF (Tamaño carta, márgenes, etc.)
             options = {
