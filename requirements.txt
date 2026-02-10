@@ -5,3 +5,5 @@ flask-sqlalchemy
 Flask-Mail
 python-dotenv
 cloudinary
+pdfkit
+jinja2
