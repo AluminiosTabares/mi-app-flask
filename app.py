@@ -153,6 +153,48 @@ def nueva_ficha():
         return render_template("ficha_form.html")
     return redirect(url_for("login"))
 
+import pdfkit
+
+@app.route("/descargar_pdf/<codigo>")
+def descargar_pdf(codigo):
+    if "rol" in session:
+        ficha = Maquina.query.filter_by(codigo=codigo).first()
+        if ficha:
+            # Reutilizamos los datos que ya arreglamos para el HTML
+            try:
+                ficha.accesorios_list = json.loads(ficha.accesorios) if ficha.accesorios else []
+                ficha.historial_list = json.loads(ficha.historial) if ficha.historial else []
+            except:
+                ficha.accesorios_list = []
+                ficha.historial_list = []
+
+            # Renderizamos el HTML de la ficha pero para el PDF
+            html_renderizado = render_template("ficha_maquina.html", ficha=ficha)
+
+            # Opciones del PDF (Tamaño carta, márgenes, etc.)
+            options = {
+                'page-size': 'Letter',
+                'margin-top': '0.5in',
+                'margin-right': '0.5in',
+                'margin-bottom': '0.5in',
+                'margin-left': '0.5in',
+                'encoding': "UTF-8",
+                'enable-local-file-access': None  # Importante para cargar el logo
+            }
+
+            # Generamos el PDF
+            pdf = pdfkit.from_string(html_renderizado, False, options=options)
+
+            # Devolvemos el archivo para descargar
+            from flask import make_response
+            response = make_response(pdf)
+            response.headers['Content-Type'] = 'application/pdf'
+            response.headers['Content-Disposition'] = f'attachment; filename=Ficha_{codigo}.pdf'
+            return response
+
+        return "Ficha no encontrada", 404
+    return redirect(url_for("login"))
+
 @app.route("/fichas/<codigo>")
 def ver_ficha(codigo):
     if "rol" in session and session["rol"] in ["admin", "empleado"]:
