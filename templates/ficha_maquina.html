@@ -139,10 +139,12 @@
 <body>
     <div class="contenedor">
         <div class="acciones-nav">
-    {% if session['rol'] in ['admin', 'empleado'] %}
-        <a href="{{ url_for('editar_ficha', codigo=ficha.codigo) }}" class="btn btn-editar">✏️ Editar</a>
-    {% endif %}
-</div>
+            <a href="{{ url_for('admin_fichas') }}" class="btn volver">← Listado</a>
+            
+            {% if session['rol'] in ['admin', 'empleado'] %}
+                <a href="{{ url_for('editar_ficha', codigo=ficha.codigo) }}" class="btn btn-editar">✏️ Editar Información</a>
+            {% endif %}
+        </div>
 
         <div class="encabezado-ficha">
             <img src="{{ 'https://tu-app.onrender.com' + url_for('static', filename='img/logoTabares.png') if es_pdf else url_for('static', filename='img/logoTabares.png') }}" alt="Logo" class="logo-ficha">
