@@ -139,12 +139,6 @@
 <body>
     <div class="contenedor">
         <div class="acciones-nav">
-    <a href="{{ url_for('admin_fichas') }}" class="btn volver">← Listado</a>
-    
-    <a href="{{ url_for('descargar_pdf', codigo=ficha.codigo) }}" class="btn" style="background: #e11d48;">
-        📄 Descargar PDF
-    </a>
-
     {% if session['rol'] in ['admin', 'empleado'] %}
         <a href="{{ url_for('editar_ficha', codigo=ficha.codigo) }}" class="btn btn-editar">✏️ Editar</a>
     {% endif %}
