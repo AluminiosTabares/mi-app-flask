@@ -5,13 +5,12 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Ficha Técnica - {{ ficha.nombre }}</title>
     <style>
-        /* CONFIGURACIÓN DE PÁGINA Y CUERPO */
         @page { size: A4; margin: 15mm; }
 
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             background: #e9edf3;
-            padding: 10px;
+            padding: 15px;
             display: flex;
             justify-content: center;
             color: #1b2f52;
@@ -24,14 +23,13 @@
             background: #ffffff;
             border: 1px solid #c5d1e0;
             width: 100%;
-            max-width: 850px; /* Vuelve a su tamaño original en PC */
-            padding: 20px;
+            max-width: 850px;
+            padding: 25px;
             box-sizing: border-box;
             border-radius: 8px;
             box-shadow: 0 4px 12px rgba(0,0,0,0.1);
         }
 
-        /* ENCABEZADO */
         .encabezado-ficha {
             display: flex;
             align-items: center;
@@ -46,7 +44,7 @@
             position: absolute;
             left: 0;
             top: 0;
-            height: 50px;
+            height: 60px;
             width: auto;
         }
 
@@ -56,10 +54,8 @@
             margin: 0;
             color: #2a5d9f;
             text-transform: uppercase;
-            letter-spacing: 1px;
         }
 
-        /* BLOQUES */
         .bloque {
             border: 1px solid #cfd8e4;
             margin-top: 15px;
@@ -79,25 +75,17 @@
             text-transform: uppercase;
         }
 
-        /* GRID ORIGINAL - RECUPERADO */
+        /* GRID RESPONSIVO */
         .bloque-identificacion {
             display: grid;
-            grid-template-columns: 1fr 1fr 180px; /* Recuperamos las 3 columnas */
+            grid-template-columns: 1fr 1fr 180px;
             gap: 15px;
         }
 
-        /* AJUSTE PARA MÓVIL (SOLO AQUÍ) */
-        @media (max-width: 600px) {
-            .bloque-identificacion {
-                grid-template-columns: 1fr; /* Se apila solo en pantallas muy chicas */
-            }
-            .logo-ficha {
-                position: static;
-                margin-bottom: 10px;
-            }
-            .encabezado-ficha {
-                flex-direction: column;
-            }
+        @media (max-width: 768px) {
+            .bloque-identificacion { grid-template-columns: 1fr; }
+            .encabezado-ficha { flex-direction: column; height: auto; padding-top: 60px; }
+            .logo-ficha { position: absolute; top: 0; left: 50%; transform: translateX(-50%); }
         }
 
         .campo {
@@ -110,7 +98,8 @@
         .label { font-weight: 700; color: #1b3b66; font-size: 12px; }
         .valor { text-align: right; color: #21497d; font-weight: 500; }
 
-        /* IMAGEN ORIGINAL */
+        /* IMAGEN ADAPTABLE */
+        .imagen-maquina { display: flex; justify-content: center; align-items: flex-start; }
         .imagen-maquina img, .foto-vacia {
             width: 170px;
             height: 170px;
@@ -118,42 +107,41 @@
             border: 2px solid #2a5d9f;
             border-radius: 6px;
             background: #fff;
+            max-width: 100%; /* Evita que se salga en cel */
         }
 
-        /* TABLA ORIGINAL */
+        .texto-cuadro {
+            white-space: pre-wrap;
+            border: 1px solid #aac3df;
+            padding: 10px;
+            background: #ffffff;
+            border-radius: 4px;
+            min-height: 40px;
+            margin-bottom: 10px;
+        }
+
+        .bloque-funcionamiento p { margin: 8px 0 4px 0; font-weight: 700; color: #2a5d9f; }
+
         .tabla-contenedor { width: 100%; overflow-x: auto; }
         table { width: 100%; border-collapse: collapse; margin-top: 5px; }
         th, td { padding: 8px; text-align: left; border: 1px solid #cbd5e1; }
         th { background: #2a5d9f; color: white; text-transform: uppercase; font-size: 11px; }
 
-        /* BOTONES */
         .acciones-nav { text-align: center; margin-bottom: 15px; }
-        .volver, .btn-editar, .btn-agregar-historial {
-            display: inline-block;
-            text-decoration: none;
-            color: white;
-            padding: 8px 16px;
-            border-radius: 6px;
-            margin: 5px;
-            font-weight: 600;
-        }
+        .btn { text-decoration: none; color: white; padding: 8px 16px; border-radius: 6px; margin: 5px; display: inline-block; font-weight: 600; }
         .volver { background: #64748b; }
         .btn-editar { background: #f59e0b; }
         .btn-agregar-historial { background: #2a5d9f; }
 
-        @media print {
-            .acciones-nav { display: none !important; }
-            body { background: white; padding: 0; }
-        }
+        @media print { .acciones-nav { display: none !important; } }
     </style>
 </head>
 <body>
     <div class="contenedor">
-
         <div class="acciones-nav">
-            <a href="{{ url_for('admin_fichas') }}" class="volver">← Volver</a>
+            <a href="{{ url_for('admin_fichas') }}" class="btn volver">← Listado</a>
             {% if session['rol'] in ['admin', 'empleado'] %}
-                <a href="{{ url_for('editar_ficha', codigo=ficha.codigo) }}" class="btn-editar">✏️ Editar</a>
+                <a href="{{ url_for('editar_ficha', codigo=ficha.codigo) }}" class="btn btn-editar">✏️ Editar</a>
             {% endif %}
         </div>
 
@@ -173,7 +161,6 @@
                     <div class="campo"><span class="label">Ubicación:</span><span class="valor">{{ ficha.ubicacion or "-" }}</span></div>
                     <div class="campo"><span class="label">Operador:</span><span class="valor">{{ ficha.operador or "-" }}</span></div>
                 </div>
-
                 <div>
                     <div class="campo"><span class="label">Equipo:</span><span class="valor">{{ ficha.nombre or "-" }}</span></div>
                     <div class="campo"><span class="label">Peso:</span><span class="valor">{{ ficha.peso or "-" }}</span></div>
@@ -182,16 +169,14 @@
                     <div class="campo"><span class="label">Voltaje:</span><span class="valor">{{ ficha.voltaje or "-" }}</span></div>
                     <div class="campo"><span class="label">Fuerza:</span><span class="valor">{{ ficha.fuerza or "-" }}</span></div>
                 </div>
-
-                <div style="display: flex; justify-content: center;">
+                <div class="imagen-maquina">
                     {% if ficha.imagen_maquina %}
                         <img src="{{ ficha.imagen_maquina if 'http' in ficha.imagen_maquina else url_for('static', filename='imagenes/' + ficha.imagen_maquina) }}" alt="Foto">
                     {% else %}
-                        <div class="foto-vacia" style="display:flex; align-items:center; justify-content:center; border: 2px dashed #ccc; color: #999; text-align:center;">SIN REGISTRO<br>FOTOGRÁFICO</div>
+                        <div class="foto-vacia" style="display:flex; align-items:center; justify-content:center; border: 2px dashed #ccc; color: #999; text-align:center;">SIN REGISTRO FOTOGRÁFICO</div>
                     {% endif %}
                 </div>
             </div>
-
             <div style="margin-top: 10px; display: grid; grid-template-columns: 1fr 1fr; gap: 20px;">
                 <div class="campo"><span class="label">Velocidad Inicial:</span><span class="valor">{{ ficha.velocidad_inicial or "-" }}</span></div>
                 <div class="campo"><span class="label">Velocidad Final:</span><span class="valor">{{ ficha.velocidad_final or "-" }}</span></div>
@@ -204,11 +189,23 @@
         </div>
 
         <div class="bloque">
+            <h2>Operación y Mantenimiento</h2>
+            <div class="bloque-funcionamiento">
+                <p>Descripción del Funcionamiento:</p>
+                <div class="texto-cuadro">{{ ficha.funcionamiento or "No especificado." }}</div>
+                <p>Partes Críticas / Requeridas:</p>
+                <div class="texto-cuadro">{{ ficha.partes_requeridas or "No especificado." }}</div>
+                <p>Recomendaciones del Fabricante:</p>
+                <div class="texto-cuadro">{{ ficha.recomendaciones or "Sin recomendaciones adicionales." }}</div>
+            </div>
+        </div>
+
+        <div class="bloque">
             <h2>Accesorios Principales</h2>
             {% if ficha.accesorios_list %}
                 <ul style="padding-left: 20px;">
                 {% for acc in ficha.accesorios_list %}
-                    <li>{{ acc }}</li>
+                    {% if acc.strip() %}<li>{{ acc.strip() }}</li>{% endif %}
                 {% endfor %}
                 </ul>
             {% else %}
@@ -245,7 +242,7 @@
                 </table>
             </div>
             <div style="text-align: center; margin-top: 15px;">
-                <a href="{{ url_for('agregar_historial', codigo=ficha.codigo) }}" class="btn-agregar-historial">➕ Registrar Mantenimiento</a>
+                <a href="{{ url_for('agregar_historial', codigo=ficha.codigo) }}" class="btn btn-agregar-historial">➕ Nuevo Registro</a>
             </div>
         </div>
     </div>
